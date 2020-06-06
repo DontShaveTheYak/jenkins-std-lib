@@ -14,6 +14,22 @@ plugins {
     id 'java-library'
 }
 
+sourceSets {
+    main {
+        groovy {
+            srcDirs = ['src','vars']
+        }
+        resources {
+            srcDirs = ['resources']
+        }
+    }
+    test {
+        groovy {
+            srcDirs = ['test']
+        }
+    }
+}
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
@@ -25,13 +41,23 @@ repositories {
 
 dependencies {
     // Use the latest Groovy version for building this library
-    implementation 'org.codehaus.groovy:groovy-all:2.5.11'
+    compileOnly('org.codehaus.groovy:groovy-all:2.5.11')
 
     // Jenkins Plugins
-    implementation 'org.jenkins-ci.plugins.workflow:workflow-step-api:2.22@jar'
-    implementation 'org.jenkins-ci.plugins:pipeline-utility-steps:2.6.0@jar'
+    implementation('org.jenkins-ci.main:jenkins-core:2.23@jar')
+    implementation('org.jenkins-ci.plugins.workflow:workflow-step-api:2.22@jar')
+    implementation('org.jenkins-ci.plugins:pipeline-utility-steps:2.6.0@jar')
 
     // Test Frameworks
-    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
-    testImplementation 'com.lesfurets:jenkins-pipeline-unit:1.5'
+    testImplementation('junit:junit:4.12')
+    testImplementation('org.spockframework:spock-core:1.3-groovy-2.5')
+    testImplementation('com.lesfurets:jenkins-pipeline-unit:1.5')
+
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine:5.4.1')
+
+    api('org.assertj:assertj-core:3.4.1')
+}
+
+test {
+    useJUnitPlatform()
 }
