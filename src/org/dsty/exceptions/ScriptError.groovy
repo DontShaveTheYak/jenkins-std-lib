@@ -1,5 +1,9 @@
 package com.dsty.exceptions
 
+
+/**
+ * Custom Exception thrown by the bash global variable.
+ */
 class ScriptError extends Exception {
 
   /**
@@ -22,24 +26,15 @@ class ScriptError extends Exception {
    */
   Integer exitCode
 
-  /**
-   * The errorMessage used when printing the exception.
-   */
-  String errorMessage
-
   ScriptError(String stdOut, String stdErr, String output, Integer exitCode) {
+    super("Script exitCode was ${exitCode} and stdout:\n${stdErr}")
     this.stdOut = stdOut
     this.stdErr = stdErr
     this.output = output
     this.exitCode = exitCode
-    this.errorMessage = "Script exited ${this.exitCode}. stderr was:\n${this.stdErr}"
   }
 
   String getFullMessage() {
-      return "Script exited ${this.exitCode}. Output was:\n${this.output}"
-  }
-
-  public String getErrorMessage() {
-      return this.errorMessage;
+      return "Script exitCode was ${this.exitCode}. Output was:\n${this.output}"
   }
 }
