@@ -49,7 +49,8 @@ void error(String msg){
 /**
  * Check if the current level should be logged.
  * @param levels The levels that you want to log to.
- * @return bool If the current level is in levels param.
+ * @return <code>true</code> If the current level is in
+ *         levels param and <code>false</code> if not.
  */
 Boolean levelCheck(List levels){
     String level = env.PIPELINE_LOG_LEVEL ?: 'INFO'
