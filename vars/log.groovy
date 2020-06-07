@@ -2,10 +2,10 @@
  * Logs a message to the console in green.
  * @param msg The message you want to log.
  */
-void debug(String msg){
+void debug(Object msg){
   if(levelCheck(['DEBUG'])){
     ansiColor('xterm'){
-      println("\u001b[32m[Debug] ${msg}\u001b[0m")
+      println("\u001b[32m[Debug] ${msg.toString()}\u001b[0m")
     }
   }
 }
@@ -14,10 +14,10 @@ void debug(String msg){
  * Logs a message to the console in green.
  * @param msg The message you want to log.
  */
-void info(String msg){
+void info(Object msg){
   if(levelCheck(['DEBUG', 'INFO'])){
     ansiColor('xterm'){
-        println("\u001B[34m[Info] ${msg}\u001B[0m")
+        println("\u001B[34m[Info] ${msg.toString()}\u001B[0m")
     }
   }
 }
@@ -26,10 +26,10 @@ void info(String msg){
  * Logs a message to the console in yellow.
  * @param msg The message you want to log.
  */
-void warn(String msg){
+void warn(Object msg){
   if(levelCheck(['DEBUG', 'INFO', 'WARN'])){
     ansiColor('xterm'){
-        println("\u001B[33m[Warning] ${msg}\u001B[0m")
+        println("\u001B[33m[Warning] ${msg.toString()}\u001B[0m")
     }
   }
 }
@@ -38,10 +38,10 @@ void warn(String msg){
  * Logs a message to the console in red.
  * @param msg The message you want to log.
  */
-void error(String msg){
+void error(Object msg){
   if(levelCheck(['DEBUG', 'INFO', 'WARN', 'ERROR'])){
     ansiColor('xterm'){
-        println("\u001B[31m[Error] ${msg}\u001B[0m")
+        println("\u001B[31m[Error] ${msg.toString()}\u001B[0m")
     }
   }
 }
