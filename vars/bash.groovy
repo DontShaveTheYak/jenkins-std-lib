@@ -103,8 +103,8 @@ Result silent(String userScript){
  * @param failFast Determines if script should stop on first error or not.
  * @return The results of the bash command or script.
  */
-Result ignoreErrors(String userScript, Boolean consoleOutput=true, Boolean failFast=true){
-  String script = formatScript(userScript, true, false)
+Result ignoreErrors(String userScript, Boolean consoleOutput=true, Boolean failFast=false){
+  String script = formatScript(userScript, consoleOutput, failFast)
   Result result
 
   try{
