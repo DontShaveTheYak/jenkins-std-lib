@@ -1,4 +1,4 @@
-package com.dsty.exceptions
+package org.dsty.exceptions
 
 
 /**
