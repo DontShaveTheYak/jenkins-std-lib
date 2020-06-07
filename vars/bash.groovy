@@ -91,7 +91,7 @@ Result call(String userScript){
  * @return The results of the bash command or script.
  */
 Result silent(String userScript){
-  String script = formatScript(userScript, true)
+  String script = formatScript(userScript, false)
 
   return execute(script)
 }
