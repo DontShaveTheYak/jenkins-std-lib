@@ -1,4 +1,5 @@
 import org.dsty.exceptions.ScriptError
+import com.cloudbees.groovy.cps.NonCPS
 
 /**
  * Formats a bash script by adding the shebang,
