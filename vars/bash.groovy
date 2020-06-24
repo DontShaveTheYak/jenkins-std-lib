@@ -146,7 +146,7 @@ private List<String> getOutputs(){
 
   sh('#!/bin/bash\n{ set +x; } > /dev/null 2>&1 \nrm stdout stderr stdall > /dev/null 2>&1 || true')
 
-  List results = [stdOut, stdErr, output].collect { it.replaceAll('(?m)^\\+.*(?:\r?\n)?', '') }
+  List results = [stdOut, stdErr, output].collect { it.replaceAll('(?m)^\\+.*(?:\r?\n)?', '').trim() }
 
   return results
 }
