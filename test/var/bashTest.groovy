@@ -33,6 +33,7 @@ class bashTest extends BasePipelineTest {
         assertTrue('Should not exit on first error.', script.contains('{ set +e; } > /dev/null 2>&1'))
         assertTrue('Should not output to console.', script.contains('exec 3>/dev/null 2> >(tee -a stderr stdall >&3) 1> >(tee -a stdout stdall >&3)'))
         assertTrue('Should output the bash commands.', script.contains('{ set -x; } > /dev/null 2>&1'))
+        assertEquals('Should have debug logging.', 2, helper.methodCallCount('debug'))
     }
 
     @Ignore
