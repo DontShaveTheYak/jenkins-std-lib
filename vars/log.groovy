@@ -1,11 +1,20 @@
 /**
+ * Returns a string of the input object
+ * @param input Any object.
+ * @return The string version of the object.
+ */
+String getString(Object input){
+  return input.toString()
+}
+
+/**
  * Logs a message to the console in green.
  * @param msg The message you want to log.
  */
-void debug(Object msg){
+void debug(Object input){
   if(levelCheck(['DEBUG'])){
     ansiColor('xterm'){
-      println("\u001b[32m[Debug] ${msg.toString()}\u001b[0m")
+      println("\u001b[32m[Debug] ${getString(input)}\u001b[0m")
     }
   }
 }
@@ -14,10 +23,10 @@ void debug(Object msg){
  * Logs a message to the console in green.
  * @param msg The message you want to log.
  */
-void info(Object msg){
+void info(Object input){
   if(levelCheck(['DEBUG', 'INFO'])){
     ansiColor('xterm'){
-        println("\u001B[34m[Info] ${msg.toString()}\u001B[0m")
+        println("\u001B[34m[Info] ${getString(input)}\u001B[0m")
     }
   }
 }
@@ -26,10 +35,10 @@ void info(Object msg){
  * Logs a message to the console in yellow.
  * @param msg The message you want to log.
  */
-void warn(Object msg){
+void warn(Object input){
   if(levelCheck(['DEBUG', 'INFO', 'WARN'])){
     ansiColor('xterm'){
-        println("\u001B[33m[Warning] ${msg.toString()}\u001B[0m")
+        println("\u001B[33m[Warning] ${getString(input)}\u001B[0m")
     }
   }
 }
@@ -38,10 +47,10 @@ void warn(Object msg){
  * Logs a message to the console in red.
  * @param msg The message you want to log.
  */
-void error(Object msg){
+void error(Object input){
   if(levelCheck(['DEBUG', 'INFO', 'WARN', 'ERROR'])){
     ansiColor('xterm'){
-        println("\u001B[31m[Error] ${msg.toString()}\u001B[0m")
+        println("\u001B[31m[Error] ${getString(input)}\u001B[0m")
     }
   }
 }

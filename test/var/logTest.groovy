@@ -20,6 +20,20 @@ class logTest extends BasePipelineTest {
     }
 
     @Test
+    void 'Should return a string for any object.'() {
+
+        List list = ['list1','list2']
+        Map map = [map1: 'value1', map2: 'value2']
+        Integer number = 5
+        String message = 'This is only a Test!'
+
+        for(String item in [list, map, number, message]){
+            String result = log.getString(item)
+            assertSame(result.getClass(), String)
+        }
+    }
+
+    @Test
     void 'levelCheck should correctly determine when to log.'() {
 
         Boolean first = log.levelCheck([])
