@@ -28,6 +28,8 @@ class bashTest extends BasePipelineTest {
         assertTrue('Should have included our script.', script.contains(userScript))
         assertEquals('Should indent returned script.', script, script.stripIndent())
 
+        
+
         binding.setVariable('env', [PIPELINE_LOG_LEVEL:"DEBUG"])
         script = bash.formatScript(userScript, false, false)
         assertTrue('Should not exit on first error.', script.contains('{ set +e; } > /dev/null 2>&1'))
