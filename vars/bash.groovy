@@ -13,7 +13,8 @@ import com.cloudbees.groovy.cps.NonCPS
  */
 String formatScript(String userScript, Boolean consoleOutput=true, Boolean failFast=true){
 
-  String exec = consoleOutput ? 'exec 2> >(tee -a stderr stdall) 1> >(tee -a stdout stdall)' : 'exec 3>/dev/null 2> >(tee -a stderr stdall >&3) 1> >(tee -a stdout stdall >&3)'
+  String teeOutput = 'exec 2> >(tee -a stderr stdall) 1> >(tee -a stdout stdall)'
+  String exec = consoleOutput ? teeOutput : "exec &> /dev/null\n${teeOutput}"
 
   String script = """\
 #!/bin/bash
