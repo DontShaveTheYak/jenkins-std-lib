@@ -27,7 +27,7 @@ class ScriptError extends Exception {
   Integer exitCode
 
   ScriptError(String stdOut, String stdErr, String output, Integer exitCode) {
-    super("Script exitCode was ${exitCode} and stdout:\n${stdErr}")
+    super("Script exitCode was ${exitCode} and stderr:\n${stdErr}")
     this.stdOut = stdOut
     this.stdErr = stdErr
     this.output = output
