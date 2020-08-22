@@ -11,8 +11,7 @@ import com.cloudbees.groovy.cps.NonCPS
  *                 non zero exit code.
  * @return The userScript formatted for bash.
  */
-String formatScript(String userScript, Boolean consoleOutput=true, Boolean failFast=true){
-
+String formatScript(String userScript, Boolean consoleOutput=true, Boolean failFast=true) {
   String teeOutput = 'exec 2> >(tee -a stderr stdall) 1> >(tee -a stdout stdall)'
   String exec = consoleOutput ? teeOutput : "exec &> /dev/null\n${teeOutput}"
 
@@ -32,7 +31,7 @@ ${userScript.stripIndent()}
 /**
  * Contains the results of a bash script execution.
  */
-class Result {
+class Result implements Serializable {
 
   /**
    * The contents of stdOut from the bash script.
@@ -54,7 +53,7 @@ class Result {
    */
   Integer exitCode
 
-  Result(String stdOut, String stdErr, String output, Integer exitCode){
+  Result(String stdOut, String stdErr, String output, Integer exitCode) {
     this.stdOut = stdOut
     this.stdErr = stdErr
     this.output = output
@@ -70,6 +69,7 @@ class Result {
   String toString() {
       return this.output
   }
+
 }
 
 /**
@@ -79,7 +79,7 @@ class Result {
  * @param userScript The bash command or script you want to run.
  * @return The results of the bash command or script.
  */
-Result call(String userScript){
+Result call(String userScript) {
   String script = formatScript(userScript)
 
   return execute(script)
@@ -92,7 +92,7 @@ Result call(String userScript){
  * @param userScript The bash command or script you want to run.
  * @return The results of the bash command or script.
  */
-Result silent(String userScript){
+Result silent(String userScript) {
   String script = formatScript(userScript, false)
 
   return execute(script)
@@ -105,34 +105,33 @@ Result silent(String userScript){
  * @param failFast Determines if script should stop on first error or not.
  * @return The results of the bash command or script.
  */
-Result ignoreErrors(String userScript, Boolean consoleOutput=true, Boolean failFast=false){
+Result ignoreErrors(String userScript, Boolean consoleOutput=true, Boolean failFast=false) {
   String script = formatScript(userScript, consoleOutput, failFast)
   Result result
 
-  try{
+  try {
     result = execute(script)
-  }catch(ScriptError ex){
+  } catch (ScriptError ex) {
     result = new Result(ex.stdOut, ex.stdErr, ex.output, ex.exitCode)
   }
 
   return result
 }
 
-
 /**
  * Executes a bash script.
  * @param script The bash command or script you want to run.
  * @return The results of the bash command or script.
  */
-private Result execute(String script){
+private Result execute(String script) {
   Integer exitCode = sh(script: script, returnStatus: true)
 
-  def(String stdOut, String stdErr, String output) = getOutputs()
+  def(String stdOut, String stdErr, String output) = readOutputs()
 
-  if(exitCode){
+  if (exitCode) {
     throw new ScriptError(stdOut, stdErr, output, exitCode)
   }
-  
+
   return new Result(stdOut, stdErr, output, exitCode)
 }
 
@@ -140,7 +139,7 @@ private Result execute(String script){
  * Reads the script outputs from files and then removes them.
  * @return The stdout, stderr and combined script output.
  */
-private List<String> getOutputs(){
+private List<String> readOutputs() {
   String stdOut = readFile('stdout')
   String stdErr = readFile('stderr')
   String output = readFile('stdall')

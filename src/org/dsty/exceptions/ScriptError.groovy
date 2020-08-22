@@ -1,6 +1,5 @@
 package org.dsty.exceptions
 
-
 /**
  * Custom Exception thrown by the bash global variable.
  */
@@ -37,4 +36,5 @@ class ScriptError extends Exception {
   String getFullMessage() {
       return "Script exitCode was ${this.exitCode}. Output was:\n${this.output}"
   }
+
 }
