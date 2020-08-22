@@ -3,7 +3,7 @@
  * @param input Any object.
  * @return The string version of the object.
  */
-String getString(Object input){
+private String getString(Object input){
   return input.toString()
 }
 
@@ -61,7 +61,7 @@ void error(Object input){
  * @return <code>true</code> If the current level is in
  *         levels param and <code>false</code> if not.
  */
-Boolean levelCheck(List levels){
+private Boolean levelCheck(List levels){
     String level = env.PIPELINE_LOG_LEVEL ?: 'INFO'
     return levels.contains(level)
 }
