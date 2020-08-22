@@ -26,7 +26,7 @@ class bashTest extends BasePipelineTest {
         assertTrue('Should have set output to console.', script.contains('exec 2> >(tee -a stderr stdall) 1> >(tee -a stdout stdall)'))
         assertTrue('Should have not output the bash commands.', script.contains('{ set +x; } > /dev/null 2>&1'))
         assertTrue('Should have included our script.', script.contains(userScript))
-        assertEquals('Should indent returned script.', script, script.stripIndent())
+        assertEquals('Should indent returned script.', script.stripIndent(), script)
 
         binding.setVariable('env', [PIPELINE_LOG_LEVEL:"DEBUG"])
         script = bash.formatScript(userScript, false, false)
@@ -44,7 +44,7 @@ class bashTest extends BasePipelineTest {
       
       def result = bash(userScript)
 
-      assertEquals('Should return a result object', result.getClass().getSimpleName(), 'Result')
+      assertEquals('Should return a result object', 'Result', result.getClass().getSimpleName())
       assertTrue('Result should have our output.', result.toString() == "hey")
 
     }
@@ -76,7 +76,7 @@ class bashTest extends BasePipelineTest {
       
       def result = bash.ignoreErrors(userScript)
 
-      assertEquals('Should return a result object', result.getClass().getSimpleName(), 'Result')
+      assertEquals('Should return a result object', 'Result', result.getClass().getSimpleName())
       assertTrue('Result should have our output.', result.toString().contains("${userScript}: command not found"))
     }
 
@@ -99,9 +99,9 @@ class bashTest extends BasePipelineTest {
       assertTrue('Should read the stderr file.', helper.getCallStack()[2].args[0].toString().contains('stderr'))
       assertTrue('Should read the stdall file.', helper.getCallStack()[3].args[0].toString().contains('stdall'))
 
-      assertEquals('Should return stdOut', stdOut, 'stdOut')
-      assertEquals('Should return stdErr', stdErr, 'stdErr')
-      assertEquals('Should return output', output, 'output')
+      assertEquals('Should return stdOut', 'stdOut', stdOut)
+      assertEquals('Should return stdErr', 'stdErr', stdErr)
+      assertEquals('Should return output', 'output', output)
       assertTrue('Should cleanup log files.', helper.getCallStack()[4].args[0].toString().contains('rm stdout stderr stdall'))
     }
 }
