@@ -12,3 +12,6 @@ jobs:
 
       - name: Run Groovy Linter
         uses: docker://nvuillam/npm-groovy-lint
+        with:
+          entrypoint: npm-groovy-lint
+          args: --failon warning
