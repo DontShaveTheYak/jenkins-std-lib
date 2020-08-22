@@ -31,22 +31,21 @@ class bashTest extends BasePipelineTest {
         binding.setVariable('env', [PIPELINE_LOG_LEVEL:"DEBUG"])
         script = bash.formatScript(userScript, false, false)
         assertTrue('Should not exit on first error.', script.contains('{ set +e; } > /dev/null 2>&1'))
-        assertTrue('Should not output to console.', script.contains('exec 3>/dev/null 2> >(tee -a stderr stdall >&3) 1> >(tee -a stdout stdall >&3)'))
+        assertTrue('Should not output to console.', script.contains('exec &> /dev/null'))
         assertTrue('Should output the bash commands.', script.contains('{ set -x; } > /dev/null 2>&1'))
         assertEquals('Should have debug logging.', 2, helper.methodCallCount('debug'))
     }
 
-    @Ignore
     @Test
     void 'Should ignore errors.'(){
+      String userScript = 'fakeCommand'
       helper.registerAllowedMethod("sh", [Map.class], {c -> 4})
-      helper.registerAllowedMethod("readFile", [String.class], {'test'})
-      String userScript = 'echo "hey"'
+      helper.registerAllowedMethod("readFile", [String.class], {"/var/jenkins_home/workspace/Shared Library Dev@tmp/durable-6609e43d/script.sh: line 8: ${userScript}: command not found"})
+      
       def result = bash.ignoreErrors(userScript)
-      print('Results: ')
-      print(result)
 
-      printCallStack()
+      assertEquals('Should return a result object', result.getClass().getSimpleName(), 'Result')
+      assertTrue('Result should have our output.', result.toString().contains("${userScript}: command not found"))
     }
 
     @Test
