@@ -37,6 +37,38 @@ class bashTest extends BasePipelineTest {
     }
 
     @Test
+    void 'Should implement call.'() {
+      String userScript = 'echo "hey"'
+      helper.registerAllowedMethod("sh", [Map.class], {c -> 0})
+      helper.registerAllowedMethod("readFile", [String.class], {"hey"})
+      
+      def result = bash(userScript)
+
+      assertEquals('Should return a result object', result.getClass().getSimpleName(), 'Result')
+      assertTrue('Result should have our output.', result.toString() == "hey")
+
+    }
+
+    @Test
+    void 'Call should throw exception on error.'() {
+      def result
+      String userScript = 'fakeCommand'
+      helper.registerAllowedMethod("sh", [Map.class], {c -> 4})
+      helper.registerAllowedMethod("readFile", [String.class], {"/var/jenkins_home/workspace/Shared Library Dev@tmp/durable-6609e43d/script.sh: line 8: ${userScript}: command not found"})
+      
+      try{
+        result = bash(userScript)
+      }catch(Exception ex){
+        println('Caught Exception')
+        result = ex
+      }
+
+      assertEquals('Should return a result object', 'ScriptError', result.getClass().getSimpleName())
+      assertTrue('Result should have our output.', result.toString().contains("${userScript}: command not found"))
+
+    }
+
+    @Test
     void 'Should ignore errors.'(){
       String userScript = 'fakeCommand'
       helper.registerAllowedMethod("sh", [Map.class], {c -> 4})
