@@ -42,6 +42,7 @@ repositories {
 dependencies {
     // Use the latest Groovy version for building this library
     compileOnly('org.codehaus.groovy:groovy-all:2.5.11')
+    compileOnly('com.cloudbees:groovy-cps:1.32')
 
     // Jenkins Plugins
     implementation('org.jenkins-ci.main:jenkins-core:2.23@jar')

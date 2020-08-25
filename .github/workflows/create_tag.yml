@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  pull_request:
+    types: closed
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged && github.base_ref == 'master'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@master
+        with:
+          ref: 'master'
+
+      - name: Create Tag
+        uses: K-Phoen/semver-release-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_branch: master
+          release_strategy: tag
+      
+      - name: Create Release
+        if: steps.create_tag.outputs.tag
+        uses: Roang-zero1/github-create-release-action@master
+        with:
+          created_tag: ${{ steps.create_tag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

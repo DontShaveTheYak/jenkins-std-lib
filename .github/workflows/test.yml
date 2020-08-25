@@ -17,3 +17,15 @@ jobs:
 
       - name: Run Tests
         run: ./gradlew test -i
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run Groovy Linter
+        uses: docker://nvuillam/npm-groovy-lint
+        with:
+          entrypoint: npm-groovy-lint
+          args: --failon warning -l warning 

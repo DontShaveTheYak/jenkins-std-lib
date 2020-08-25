@@ -1,0 +1,126 @@
+<p>
+    Run your script with Bash!<br>
+    All bash commands use formatBash() to first format your script.<br>
+</p>
+
+
+<b>Examples:</b>
+<dl>
+    <dt>
+        Running a script and printing the output (stdout + stderr).
+    </dt>
+    <dd>
+        <br>
+        <code>
+            def result = bash('echo "hey"')<br>
+            println("Result output is: ${result}")
+        </code>
+        <p>
+            hey<br>
+            Result output is: hey
+        </p>
+    </dd>
+    <dt>
+        Running a script but not outputing to the console.
+    </dt>
+    <dd>
+        <br>
+        <code>
+            def result = bash.silent('echo "hey"')<br>
+            println("Result output is: ${result}")
+        </code>
+        <p>
+            Result output is: hey
+        </p>
+    </dd>
+    <dt>
+        Using the result object.
+    </dt>
+    <dd>
+        <br>
+        <code>
+            def result = bash.silent('echo "hey"')<br><br>
+
+            println("output is: ${result.output}")<br>
+            println("stderr is: ${result.stdErr}")<br>
+            println("stdout is: ${result.stdOut}")<br>
+            println("exitcode is: ${result.exitCode}")<br>
+        </code>
+        <p>
+            output is: hey<br>
+            stderr is: <br>
+            stdout is: hey<br>
+            exitcode is: 0<br>
+        </p>
+    </dd>
+    <dt>
+        Handling errors.
+    </dt>
+    <dd>
+        <br>
+        <code>
+            try{<br>
+            &emsp;&emsp;<t></t>result = bash.silent('fakecommand')<br>
+            }catch(ScriptError ex){<br>
+            &emsp;&emsp;print(ex)<br>
+            }<br>
+        </code>
+        <p>
+            org.dsty.exceptions.ScriptError: Script exitCode was 127 and stderr:<br>
+            /var/jenkins_home/workspace/shared-lib@tmp/durable-1ddd6acb/script.sh: line 6: fakecommand: command not found
+            <br><br>
+            <i>ScriptError Exception has the same fields as the result object.</i>
+        </p>
+    </dd>
+    <dt>
+        Ignoring errors.
+    </dt>
+    <dd>
+        <br>
+        <code>
+            def result = bash.ignoreErrors('fakecommand', consoleOutput=false)<br>
+            print(result.stdErr)
+        </code>
+        <p>
+            /var/jenkins_home/workspace/shared-lib@tmp/durable-47d162ed/script.sh: line 6: fakecommand: command not found
+        </p>
+    </dd>
+</dl>
+
+<br>
+<b>Avaliable methods:</b>
+
+<dl>
+    <dt>
+        <code>Result call(String userScript)</code>
+    </dt>
+    <dd>
+        <p>
+            Runs a bash script that sends all output to the console and returns a result object.
+        </p>
+    </dd>
+    <dt>
+        <code>Result silent(String userScript)</code>
+    </dt>
+    <dd>
+        <p>
+            Runs a bash script that sends no output to the console and returns a result object.
+        </p>
+    </dd>
+    <dt>
+        <code>Result ignoreErrors(String userScript, Boolean consoleOutput=true, Boolean failFast=false)</code>
+    </dt>
+    <dd>
+        <p>
+            Runs a bash script that ignores errors. failFast controls if script should stop on first error or not.
+        </p>
+    </dd>
+    <dt>
+        <code>String formatScript(String userScript, Boolean consoleOutput=true, Boolean failFast=true)</code>
+    </dt>
+    <dd>
+        <p>
+            Formats a bash script by adding the shebang, setting the verbose level and sourcing bashrc.
+        </p>
+    </dd>
+</dl>
