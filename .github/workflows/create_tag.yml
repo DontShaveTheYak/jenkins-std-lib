@@ -5,31 +5,28 @@ on:
     types: closed
 
 jobs:
-  develop:
-    name: Create RC
+  release:
+    name: Create Release
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged && github.base_ref == 'develop'
+    if: github.event.pull_request.merged && github.base_ref == 'master'
     steps:
       - name: Checkout Code
         uses: actions/checkout@master
         with:
-          ref: 'develop'
+          ref: 'master'
 
       - name: Create Tag
         uses: K-Phoen/semver-release-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release_branch: develop
-          tag_format: v%major%.%minor%.%patch%-RC
+          release_branch: master
           release_strategy: tag
       
       - name: Create Release
         if: steps.create_tag.outputs.tag
         uses: Roang-zero1/github-create-release-action@master
         with:
-          created_tag: ${{ steps.tag_and_prepare_release.outputs.tag }}
-          version_regex: ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+
-          prerelease_regex: ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+-RC
+          created_tag: ${{ steps.create_tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
