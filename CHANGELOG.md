@@ -12,7 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fixed** for any bug fixes.
 - **Security** in case of vulnerabilities.
 
-## [Unreleased]
+## [0.1.1] - 08/25/2020
+
+### Changed
+
+- Update the changelog 
+
+### Removed
+
+- Release Canidates from Release Process for now
+
+## [0.1.0-RC] - 08/25/2020
+
+### Added
+
+- Global Var to execute bash scripts
+- Automated Release Process with Github Actions
 
 ## [0.0.1] - 06/06/2020
 
@@ -22,7 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub workflow for unit testing
 - This changelog
 
-[unreleased]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/v0.0.1...develop
-
-[0.0.2]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/v0.0.1...v0.0.2
+[0.1.1]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/v0.1.0-RC...v0.1.1
+[0.1.0-RC]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/v0.0.1...v0.1.0-RC
 [0.0.1]: https://github.com/DontShaveTheYak/jenkins-std-lib/releases/tag/v0.0.1
