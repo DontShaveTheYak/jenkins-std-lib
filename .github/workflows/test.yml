@@ -28,4 +28,4 @@ jobs:
         uses: docker://nvuillam/npm-groovy-lint
         with:
           entrypoint: npm-groovy-lint
-          args: --failon warning
+          args: --failon warning -l warning 
