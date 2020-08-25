@@ -1,0 +1,26 @@
+{
+    "extends": "all",
+    "rules": {
+        "CompileStatic": {
+            "enabled": false
+        },
+        "ImplicitClosureParameter": {
+            "enabled": false
+        },
+        "LineLength": {
+            "enabled": false
+        },
+        "SerializableClassMustDefineSerialVersionUID": {
+            "enabled": false
+        },
+        "SpaceAroundMapEntryColon": {
+            "enabled": false
+        },
+        "UnnecessaryGetter": {
+            "enabled": false
+        },
+        "UnnecessaryReturnKeyword": {
+            "enabled": false
+        }
+    }
+}
