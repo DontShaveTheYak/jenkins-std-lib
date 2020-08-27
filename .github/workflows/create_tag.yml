@@ -16,6 +16,7 @@ jobs:
           ref: 'master'
 
       - name: Create Tag
+        id: create_tag
         uses: K-Phoen/semver-release-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
