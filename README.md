@@ -5,7 +5,7 @@ DontShaveTheYak presents the Jenkins Standard Library. A set of useful tools for
 
 Why use our library?
 * [Less Yak Shaving](https://seths.blog/2005/03/dont_shave_that/) for your team.
-* We fully test and lint this codebase
+* We fully test and lint this codebase.
 * Our Releases and Docs are automated.
 * OpenSource and Free to use.
 
@@ -19,21 +19,20 @@ to use, and the url to reach it.
 
 ![Configure](.images/configure.PNG)
 
-
-*Note: Default version of master will get you the latest release. For production you should pin the default version to a [release](https://github.com/DontShaveTheYak/jenkins-std-lib/releases).*
+*Note: Default version of master will get you the latest release. For production you should pin version to a [release](https://github.com/DontShaveTheYak/jenkins-std-lib/releases) tag.*
 
 The Jenkins Standard Library requires the following plugins:
 * AnsiColor - Used to provide color output for our built in logger.
 
 For more detailed information see the offical Jenkins [Shared Library](https://www.jenkins.io/doc/book/pipeline/shared-libraries/) documentation.
 
-### Recomeneded Setup
+### Recommended Setup
 
 Our Shared Library will function and look its best if you setup the additional plugins below.
 
 We recommend the following plugins:
-* simple-theme-plugin - To remove non-useful information from build console. Use this config:  
-2
+* [simple-theme-plugin](https://plugins.jenkins.io/simple-theme-plugin/) - To remove non-useful information from build console. Use this config:  
+
   ```
   .pipeline-annotated {
      display: none; 
@@ -42,7 +41,7 @@ We recommend the following plugins:
         display: none; 
   }
   ```
-* OWASP Markup Formatter - To properly render Global Variable documentation. Make sure to enable "Safe HTML" in the "Configure Global Security" page.
+* [OWASP Markup Formatter](https://plugins.jenkins.io/antisamy-markup-formatter/) - To properly render Global Variable documentation. Make sure to enable "Safe HTML" in the "Configure Global Security" page.
 
 ### Usage
 
@@ -51,7 +50,7 @@ Once you have installed our shared library you just need to reference it at the 
 @Library('jenkins-std-lib')
 ```
 
-Once the job has run once succesfully you can find the documentation for any global vars added by us in the "Global Variables Reference" page
+Once the job has run once succesfully you can find the documentation for any global vars added by jenkins-std-lib in the "Global Variables Reference" page
 of "Pipeline Syntax".
 
 ![Pipeline Syntax](.images/pipeline_syntax.PNG)
