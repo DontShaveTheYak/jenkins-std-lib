@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fixed** for any bug fixes.
 - **Security** in case of vulnerabilities.
 
+## [0.1.2] - 08/27/2020
+
+### Changed
+- Updated Readme to include installation and usage.
+- Release workflow to publish library to maven central.
+
 ## [0.1.1] - 08/25/2020
 
 ### Changed
