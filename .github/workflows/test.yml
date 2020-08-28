@@ -1,6 +1,6 @@
 name: Tests
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   unit:
@@ -15,8 +15,22 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
       - name: Run Tests
-        run: ./gradlew test -i
+        run: ./gradlew test jacocoTestReport -i --no-daemon
+
+      - name: Upload Coverage Report
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
   lint:
     name: Lint
     runs-on: ubuntu-latest
