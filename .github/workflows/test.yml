@@ -25,7 +25,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Run Tests
-        run: ./gradlew test jacocoTestReport -i --no-daemon
+        run: ./gradlew build --no-daemon
 
       - name: Upload Coverage Report
         uses: codecov/codecov-action@v1

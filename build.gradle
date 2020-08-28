@@ -145,6 +145,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+
+    finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
 // configure nexus staging plugin
@@ -156,4 +158,11 @@ nexusStaging {
 wrapper {
     gradleVersion = '6.5'
     distributionType = Wrapper.DistributionType.ALL
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
 }
