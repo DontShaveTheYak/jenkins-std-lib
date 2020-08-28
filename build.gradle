@@ -18,6 +18,7 @@ plugins {
     // Needed for signing artifacts pushed to https://oss.sonatype.org/
     id 'signing'
     id 'io.codearte.nexus-staging' version '0.21.2'
+    id 'jacoco'
 }
 
 version = project.findProperty('CICD_TAG') ?: '0.0.0-DEV'
@@ -144,6 +145,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+
+    finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
 // configure nexus staging plugin
@@ -155,4 +158,11 @@ nexusStaging {
 wrapper {
     gradleVersion = '6.5'
     distributionType = Wrapper.DistributionType.ALL
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
 }

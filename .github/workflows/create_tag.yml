@@ -23,6 +23,7 @@ jobs:
         with:
           release_branch: master
           release_strategy: tag
+          tag_format: "%major%.%minor%.%patch%"
       
       - name: Create Release
         if: steps.create_tag.outputs.tag
