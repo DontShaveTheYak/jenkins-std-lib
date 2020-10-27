@@ -1,9 +1,11 @@
-package org.dsty.exceptions
+package org.dsty.bash
+
+import com.cloudbees.groovy.cps.NonCPS
 
 /**
- * Custom Exception thrown by the bash global variable.
+ * Contains the results of a bash script execution.
  */
-class ScriptError extends Exception {
+class Result implements Serializable {
 
   /**
    * The contents of stdOut from the bash script.
@@ -25,16 +27,21 @@ class ScriptError extends Exception {
    */
   Integer exitCode
 
-  ScriptError(String stdOut, String stdErr, String output, Integer exitCode) {
-    super("Script exitCode was ${exitCode} and stderr:\n${stdErr}")
+  Result(String stdOut, String stdErr, String output, Integer exitCode) {
     this.stdOut = stdOut
     this.stdErr = stdErr
     this.output = output
     this.exitCode = exitCode
   }
 
-  String getFullMessage() {
-      return "Script exitCode was ${this.exitCode}. Output was:\n${this.output}"
+  /**
+   * Print the output of the bash script when the class is printed.
+   * @return The output from the bash script.
+   */
+  @Override
+  @NonCPS
+  String toString() {
+      return this.output
   }
 
 }

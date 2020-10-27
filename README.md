@@ -1,11 +1,11 @@
-![Tests](https://github.com/DontShaveTheYak/jenkins-std-lib/workflows/Tests/badge.svg)
+![Lint](https://github.com/DontShaveTheYak/jenkins-std-lib/workflows/Lint/badge.svg)
 [![javadoc](https://javadoc.io/badge2/io.github.dontshavetheyak/jenkins-std-lib/javadoc.svg)](https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib)
 
 DontShaveTheYak presents the Jenkins Standard Library. A set of useful tools for everyday CI/CD jobs.
 
 Why use our library?
 * [Less Yak Shaving](https://seths.blog/2005/03/dont_shave_that/) for your team.
-* We fully test and lint this codebase.
+* We fully ~~test~~ and lint this codebase.
 * Our Releases and Docs are automated.
 * OpenSource and Free to use.
 
@@ -50,9 +50,4 @@ Once you have installed our shared library you just need to reference it at the 
 @Library('jenkins-std-lib')
 ```
 
-Once the job has run once succesfully you can find the documentation for any global vars added by jenkins-std-lib in the "Global Variables Reference" page
-of "Pipeline Syntax".
-
-![Pipeline Syntax](.images/pipeline_syntax.PNG)
-
-We also have some classes you can import as well. For full documentation see [here](https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib/latest/index.html).
+For full documentation see [here](https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib/latest/index.html).
