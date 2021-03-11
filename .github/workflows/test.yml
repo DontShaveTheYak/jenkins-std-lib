@@ -18,7 +18,7 @@ jobs:
         uses: docker://nvuillam/npm-groovy-lint
         with:
           entrypoint: npm-groovy-lint
-          args: --failon warning -l warning
+          args: --failon warning -l warning -p src
 
   tests:
     name: Functional
