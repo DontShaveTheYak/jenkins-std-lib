@@ -1,7 +1,8 @@
-import docker
+import os
 from pathlib import Path
+from typing import ByteString
 
-from docker.client import DockerClient
+import docker
 import pytest
 
 @pytest.fixture(scope='session')
@@ -9,7 +10,9 @@ def client():
     return docker.from_env()
 
 @pytest.fixture(scope='session')
-def container(client: DockerClient):
+def container(client: docker.DockerClient):
+
+    image = os.getenv('RUNNER_IMAGE', 'iorunner')
 
     jobs_path: str = str(Path(__file__, '../../../jobs').resolve())
     lib_path: str = str(Path(__file__, '../../../').resolve())
@@ -27,7 +30,7 @@ def container(client: DockerClient):
             }
         }
 
-        return client.containers.run('iorunner', f'-f /workspace/{job_name}', remove=True, volumes=volumes)
+        return client.containers.run(image, f'-f /workspace/{job_name}', remove=True, volumes=volumes)
 
 
     return create_container
