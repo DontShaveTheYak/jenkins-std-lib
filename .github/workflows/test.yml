@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  linting:
     name: Lint
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +20,7 @@ jobs:
           entrypoint: npm-groovy-lint
           args: --failon warning -l warning
 
-  test:
+  tests:
     name: Functional
     needs: linting
     runs-on: ubuntu-latest
