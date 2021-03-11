@@ -1,0 +1,35 @@
+def lib
+node(){
+    
+    stage('Setup Dynamic Library'){
+        sh("""mkdir lib || true && \
+            cp -r /var/jenkins_home/shared_lib/* lib
+        """)
+        
+        sh("""git config --global user.email "shadycuz@gmail.com" && \
+                git config --global user.name "shadycuz"
+        """)
+        
+        String repoPath = sh(returnStdout: true, script: 'pwd').trim() + "/lib"
+        
+        sh("""cd lib && \
+                (rm -rf .git || true) && \
+                git init && \
+                git add --all && \
+                git commit -m init
+        """)
+        lib = library identifier: 'local-lib@master', 
+                retriever: modernSCM([$class: 'GitSCMSource', remote: repoPath]), 
+                changelog: false
+                
+        // deleteDir()
+    }
+    
+    def bash = lib.org.dsty.bash.BashClient.new(this)
+    
+    bash('bash --version')
+    
+    // env.PIPELINE_LOG_LEVEL = 'DEBUG'
+    
+    def result = bash.silent('echo "hey"')
+}
