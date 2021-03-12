@@ -45,7 +45,7 @@ jobs:
       - name: Publish Package
         run: |
           chmod +x gradlew
-          ./gradlew publishToSonatype closeSonatypeStagingRepository
+          ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
         env:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.NEXUS_PASSWORD }}
