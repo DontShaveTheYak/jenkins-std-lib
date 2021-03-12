@@ -26,7 +26,7 @@ jobs:
           tag_format: "%major%.%minor%.%patch%-SNAPSHOT"
 
       - name: Create Draft Release
-        uses: release-drafter/release-drafter@v5
+        uses: release-drafter/release-drafter@v5.12.1
         with:
           disable-autolabeler: true
           tag: ${{ steps.snapshot_tag.outputs.tag }}
