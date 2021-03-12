@@ -5,6 +5,47 @@ on:
     types: closed
 
 jobs:
+  snapshot:
+    name: Create Snapshot Release
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged && github.base_ref == 'develop'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@master
+        with:
+          ref: 'develop'
+
+      - name: Create Snapshot Tag
+        id: snapshot_tag
+        uses: K-Phoen/semver-release-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_branch: develop
+          release_strategy: tag
+          tag_format: "%major%.%minor%.%patch%-SNAPSHOT"
+
+      - name: Create Draft Release
+        uses: release-drafter/release-drafter@v5
+        with:
+          disable-autolabeler: true
+          tag: ${{ steps.snapshot_tag.outputs.tag }}
+          version: ${{ steps.snapshot_tag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Package
+        if: steps.snapshot_tag.outputs.tag
+        run: |
+          chmod +x gradlew
+          ./gradlew publishToSonatype closeSonatypeStagingRepository
+        env:
+          ORG_GRADLE_PROJECT_nexusUsername: ${{ secrets.NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_CICD_TAG: ${{ steps.create_tag.outputs.tag }}
+
   release:
     name: Create Release
     runs-on: ubuntu-latest
