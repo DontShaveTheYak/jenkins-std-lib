@@ -25,6 +25,11 @@ version = project.findProperty('CICD_TAG') ?: '0.0.0-DEV'
 
 group = 'io.github.dontshavetheyak'
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 
 groovydoc {
     use = true
@@ -39,8 +44,7 @@ task groovydocJar(type: Jar, dependsOn: groovydoc ) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'jenkins-std-lib'
-            from components.java
+            from(components.java)
 
             artifact(groovydocJar) {
                 classifier = 'javadoc'
