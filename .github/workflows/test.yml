@@ -5,9 +5,11 @@ on:
     branches:
       - 'master'
   pull_request:
+    paths-ignore:
+      - '.github/workflows/release.yml '
 
 jobs:
-  lint:
+  linting:
     name: Lint
     runs-on: ubuntu-latest
     steps:
@@ -18,4 +20,32 @@ jobs:
         uses: docker://nvuillam/npm-groovy-lint
         with:
           entrypoint: npm-groovy-lint
-          args: --failon warning -l warning 
+          args: --failon warning -l warning -p src
+
+  tests:
+    name: Functional
+    needs: linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tests/requirements.txt
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_PUSH_USERNAME }}
+          password: ${{ secrets.DOCKER_PUSH_TOKEN }}
+      
+      - name: Test with pytest
+        env:
+          RUNNER_IMAGE: shadycuz/jenkins-std-lib
+        run: |
+          pytest

@@ -43,13 +43,17 @@ class BashClient implements Serializable {
     String exec = consoleOutput ? teeOutput : "exec 3>/dev/null 2> >(tee -a stderr stdall >&3) 1> >(tee -a stdout stdall >&3)"
 
     String script = """\
-  #!/bin/bash
-  source \$HOME/.bashrc > /dev/null 2>&1 || true
-  { ${failFast ? 'set -e;' : 'set +e;'} } > /dev/null 2>&1
-  ${exec}
-  { ${this.steps.env.PIPELINE_LOG_LEVEL == 'DEBUG' ? 'set -x;' : 'set +x;' } } > /dev/null 2>&1
-  ${userScript.stripIndent()}
+    #!/bin/bash
+    source \$HOME/.bashrc > /dev/null 2>&1 || true
+    { ${failFast ? 'set -e;' : 'set +e;'} } > /dev/null 2>&1
+    ${exec}
+    { ${this.steps.env.PIPELINE_LOG_LEVEL == 'DEBUG' ? 'set -x;' : 'set +x;' } } > /dev/null 2>&1
+    
+    # User Script
     """.stripIndent()
+    
+    userScript = userScript.stripIndent()
+    script = "${script}${userScript}"
     this.log.debug("Formatted script:\n${script}")
 
     return script

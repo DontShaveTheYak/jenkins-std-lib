@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  pull_request:
+    types: closed
+
+jobs:
+  tag:
+    name: Create Tag
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged && github.base_ref == 'develop' || github.base_ref == 'master'
+    outputs:
+      tag: ${{ steps.create_tag.outputs.tag }}
+    steps:
+      - name: Set Tag Format
+        env:
+          BRANCH: ${{ github.base_ref }}
+        run: |
+          if [ "$BRANCH" = "develop" ]; then
+              echo "TAG_FORMAT=%major%.%minor%.%patch%-SNAPSHOT" >> $GITHUB_ENV
+          else
+              echo "TAG_FORMAT=%major%.%minor%.%patch%" >> $GITHUB_ENV
+          fi
+
+      - name: Create Tag
+        id: create_tag
+        uses: K-Phoen/semver-release-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_branch: ${{ github.base_ref }}
+          release_strategy: tag
+          tag_format: ${{ env.TAG_FORMAT }}
+
+  publish:
+    name: Publish Package
+    runs-on: ubuntu-latest
+    needs: tag
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@master
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: Publish Package
+        if: steps.snapshot_tag.outputs.tag
+        run: |
+          chmod +x gradlew
+          ./gradlew publishToSonatype closeSonatypeStagingRepository
+        env:
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_CICD_TAG: ${{needs.tag.outputs.tag}}
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [tag, publish]
+    steps:
+      - name: Create Draft Release
+        uses: release-drafter/release-drafter@v5.12.1
+        if: github.base_ref == 'develop'
+        with:
+          tag: ${{needs.tag.outputs.tag}}
+          version: ${{needs.tag.outputs.tag}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        if: github.base_ref == 'master'
+        uses: Roang-zero1/github-create-release-action@master
+        with:
+          created_tag: ${{needs.tag.outputs.tag}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

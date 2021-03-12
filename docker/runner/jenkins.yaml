@@ -1,0 +1,23 @@
+jenkins:
+  mode: NORMAL
+  numExecutors: 1
+  labelString: "linux"
+  scmCheckoutRetryCount: 0
+  myViewsTabBar: "standard"
+  viewsTabBar: "standard"
+  globalNodeProperties:
+    - envVars:
+        env:
+          - key: TestKey
+            value: TestValue
+unclassified:
+  globalLibraries:
+    libraries:
+      - defaultVersion: "master"
+        name: "jenkins-std-lib"
+        implicit: false
+        retriever:
+          modernSCM:
+            scm:
+              git:
+                remote: "https://github.com/DontShaveTheYak/jenkins-std-lib.git"
