@@ -43,7 +43,6 @@ jobs:
           ref: ${{ github.base_ref }}
 
       - name: Publish Package
-        if: steps.snapshot_tag.outputs.tag
         run: |
           chmod +x gradlew
           ./gradlew publishToSonatype closeSonatypeStagingRepository
