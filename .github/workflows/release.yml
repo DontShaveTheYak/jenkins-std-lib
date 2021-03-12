@@ -45,7 +45,7 @@ jobs:
       - name: Publish Package
         run: |
           chmod +x gradlew
-          ./gradlew publishToSonatype closeSonatypeStagingRepository
+          ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
         env:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.NEXUS_PASSWORD }}
@@ -59,11 +59,11 @@ jobs:
     needs: [tag, publish]
     steps:
       - name: Create Draft Release
-        uses: release-drafter/release-drafter@v5.12.1
         if: github.base_ref == 'develop'
+        uses: Roang-zero1/github-create-release-action@master
         with:
-          tag: ${{needs.tag.outputs.tag}}
-          version: ${{needs.tag.outputs.tag}}
+          created_tag: ${{needs.tag.outputs.tag}}
+          create_draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -72,5 +72,6 @@ jobs:
         uses: Roang-zero1/github-create-release-action@master
         with:
           created_tag: ${{needs.tag.outputs.tag}}
+          update_existing: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
