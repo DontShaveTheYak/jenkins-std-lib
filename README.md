@@ -1,5 +1,7 @@
-![Lint](https://github.com/DontShaveTheYak/jenkins-std-lib/workflows/Lint/badge.svg)
-[![javadoc](https://javadoc.io/badge2/io.github.dontshavetheyak/jenkins-std-lib/javadoc.svg)](https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib)
+
+[![Tests][test-badge]][test-url]
+[![Lint][lint-badge]][test-url]
+[![Latest][doc-badge]][doc-url]
 
 DontShaveTheYak presents the Jenkins Standard Library. A set of useful tools for everyday CI/CD jobs.
 
@@ -51,3 +53,10 @@ Once you have installed our shared library you just need to reference it at the 
 ```
 
 For full documentation see [here](https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib/latest/index.html).
+
+
+[test-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests?label=Tests
+[lint-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests?label=Lint
+[test-url]: https://github.com/DontShaveTheYak/jenkins-std-lib/actions/workflows/test.yml
+[doc-badge]: https://javadoc.io/badge2/io.github.dontshavetheyak/jenkins-std-lib/javadoc.svg?cacheSeconds=3600
+[doc-url]: https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib
