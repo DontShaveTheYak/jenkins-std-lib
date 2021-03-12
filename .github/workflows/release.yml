@@ -56,8 +56,17 @@ jobs:
         with:
           ref: 'master'
 
+      - name: Get Previous tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+
+      - name: Remove -SNAPSHOT from tag
+        env:
+          PREV_TAG: ${{ steps.previoustag.outputs.tag }}
+        run: echo "NEW_TAG=$( echo ${test_tag/-SNAPSHOT/})" >> $GITHUB_ENV
+
       - name: Create Tag
-        id: create_tag
+        id: release_tag
         uses: K-Phoen/semver-release-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -65,29 +74,30 @@ jobs:
           release_branch: master
           release_strategy: tag
           tag_format: "%major%.%minor%.%patch%"
+          tag: ${{ env.NEW_TAG }}
       
       - name: Create Release
-        if: steps.create_tag.outputs.tag
+        if: steps.release_tag.outputs.tag
         uses: Roang-zero1/github-create-release-action@master
         with:
-          created_tag: ${{ steps.create_tag.outputs.tag }}
+          created_tag: ${{ steps.release_tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up JDK 1.8
-        if: steps.create_tag.outputs.tag
+        if: steps.release_tag.outputs.tag
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
 
       - name: Publish Package
-        if: steps.create_tag.outputs.tag
+        if: steps.release_tag.outputs.tag
         run: |
           chmod +x gradlew
-          ./gradlew publish closeAndReleaseRepository
+          ./gradlew publishToSonatype closeSonatypeStagingRepository
         env:
-          ORG_GRADLE_PROJECT_nexusUsername: ${{ secrets.NEXUS_USERNAME }}
-          ORG_GRADLE_PROJECT_nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.NEXUS_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-          ORG_GRADLE_PROJECT_CICD_TAG: ${{ steps.create_tag.outputs.tag }}
+          ORG_GRADLE_PROJECT_CICD_TAG: ${{ steps.release_tag.outputs.tag }}
