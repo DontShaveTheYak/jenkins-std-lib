@@ -6,7 +6,8 @@ on:
       - 'master'
   pull_request:
     paths-ignore:
-      - '.github/workflows/release.yml '
+      - '.github/workflows/release.yml'
+      - '.github/workflows/pr_label.yml'
 
 jobs:
   linting:
