@@ -7,7 +7,7 @@ on:
 jobs:
   label:
     name: Check Labels
-    if: github.event.pull_request.base.ref == 'develop' || github.event.pull_request.base.ref == 'master'
+    if: github.event.pull_request.head.ref == 'develop' || github.event.pull_request.head.ref == 'master'
     runs-on: ubuntu-latest
     steps:
       - name: Check Labels
