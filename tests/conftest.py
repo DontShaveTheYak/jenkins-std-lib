@@ -16,7 +16,7 @@ def container(client: docker.DockerClient):
 
     jobs_path: str = str(Path(__file__, '../../jobs').resolve())
     lib_path: str = str(Path(__file__, '../../').resolve())
-    
+
     def create_container(job_name):
 
         volumes = {

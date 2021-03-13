@@ -20,4 +20,3 @@ def test_ignore_errors(container):
     assert b"fakecommand: command not found" in job_output
     assert b"secretcommand" not in job_output
     assert b"anothercommand" not in job_output
-    
