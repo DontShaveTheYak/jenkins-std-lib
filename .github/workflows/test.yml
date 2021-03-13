@@ -5,22 +5,10 @@ on:
     branches:
       - 'master'
   pull_request:
-    types: [opened, labeled, unlabeled, synchronize]
     paths-ignore:
       - '.github/workflows/release.yml '
 
 jobs:
-  pr:
-    name: PR is Valid
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Labels
-        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
-        with:
-            github-token: '${{ secrets.GITHUB_TOKEN }}'
-            valid-labels: 'major, minor, patch'
-
   linting:
     name: Lint
     runs-on: ubuntu-latest
