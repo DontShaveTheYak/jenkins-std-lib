@@ -48,10 +48,10 @@ class BashClient implements Serializable {
     { ${failFast ? 'set -e;' : 'set +e;'} } > /dev/null 2>&1
     ${exec}
     { ${this.steps.env.PIPELINE_LOG_LEVEL == 'DEBUG' ? 'set -x;' : 'set +x;' } } > /dev/null 2>&1
-    
+
     # User Script
     """.stripIndent()
-    
+
     userScript = userScript.stripIndent()
     script = "${script}${userScript}"
     this.log.debug("Formatted script:\n${script}")
