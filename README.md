@@ -33,14 +33,14 @@ For more detailed information see the offical Jenkins [Shared Library](https://w
 Our Shared Library will function and look its best if you setup the additional plugins below.
 
 We recommend the following plugins:
-* [simple-theme-plugin](https://plugins.jenkins.io/simple-theme-plugin/) - To remove non-useful information from build console. Use this config:  
+* [simple-theme-plugin](https://plugins.jenkins.io/simple-theme-plugin/) - To remove non-useful information from build console. Use this config:
 
   ```
   .pipeline-annotated {
-     display: none; 
+     display: none;
   }
   .pipeline-new-node {
-        display: none; 
+        display: none;
   }
   ```
 * [OWASP Markup Formatter](https://plugins.jenkins.io/antisamy-markup-formatter/) - To properly render Global Variable documentation. Make sure to enable "Safe HTML" in the "Configure Global Security" page.

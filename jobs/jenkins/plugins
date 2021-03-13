@@ -1,0 +1,27 @@
+@Library('pipeline-library')
+
+import org.dsty.jenkins.Instance
+
+node() {
+
+    sh('echo Test for CPS issue')
+
+    Instance jenkins = new Instance()
+
+    List plugins = jenkins.plugins()
+
+    if (!plugins) {
+      error('Should have found plugins')
+    }
+
+    if (jenkins.pluginInstalled('fakePlugin')) {
+      error('Should not find plugin.')
+    }
+
+    if (!jenkins.pluginInstalled('workflow-job')) {
+      error('Should have plugin installed.')
+    }
+
+    sh('echo Test for CPS issue')
+
+}

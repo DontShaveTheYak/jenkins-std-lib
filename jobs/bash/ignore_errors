@@ -2,7 +2,7 @@
 import org.dsty.bash.BashClient
 
 node() {
-    
+
     def bash = new BashClient(this)
 
     String cmd = 'fakecommand'
