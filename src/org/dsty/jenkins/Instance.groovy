@@ -1,6 +1,7 @@
 package org.dsty.jenkins
 
 import jenkins.model.Jenkins
+import com.cloudbees.groovy.cps.NonCPS
 
 /**
   * Checks if a plugin is installed.

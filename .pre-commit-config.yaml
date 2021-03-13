@@ -7,3 +7,7 @@ repos:
       - id: check-merge-conflict
       - id: mixed-line-ending
       - id: check-yaml
+  - repo: https://github.com/jguttman94/pre-commit-gradle
+    rev: v0.3.0
+    hooks:
+      - id: gradle-build
