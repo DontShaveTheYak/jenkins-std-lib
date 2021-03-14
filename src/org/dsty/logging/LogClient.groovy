@@ -1,8 +1,11 @@
 /* groovylint-disable DuplicateStringLiteral, Println */
 package org.dsty.logging
 
-import static groovy.json.JsonOutput.toJson
 import static groovy.json.JsonOutput.prettyPrint
+import static groovy.json.JsonOutput.toJson
+import static org.dsty.jenkins.Instance.pluginInstalled
+
+import com.cloudbees.groovy.cps.NonCPS
 
 /**
  * Basic logger that uses the <a href="https://plugins.jenkins.io/ansicolor/">AnsiColor</a>
@@ -18,7 +21,12 @@ class LogClient implements Serializable {
   /**
    * Workflow script representing the jenkins build.
    */
-  Object steps
+  private final Object steps
+
+  /**
+   * If we should print in color.
+   */
+  Boolean printColor
 
   /**
    * Default Constructor
@@ -32,6 +40,7 @@ class LogClient implements Serializable {
    */
   LogClient(Object steps) {
     this.steps = steps
+    useColor()
   }
 
   /**
@@ -40,9 +49,7 @@ class LogClient implements Serializable {
   */
   void debug(Object input) {
     if (levelCheck(['DEBUG'])) {
-      this.steps.ansiColor('xterm') {
-        this.steps.println("\u001b[32m[Debug] ${getString(input)}\u001b[0m")
-      }
+      writeMsg("[Debug] ${getString(input)}", '32')
     }
   }
 
@@ -52,9 +59,7 @@ class LogClient implements Serializable {
   */
   void info(Object input) {
     if (levelCheck(['DEBUG', 'INFO'])) {
-      this.steps.ansiColor('xterm') {
-        this.steps.println("\u001B[34m[Info] ${getString(input)}\u001B[0m")
-      }
+      writeMsg("[Info] ${getString(input)}", '34')
     }
   }
 
@@ -64,9 +69,7 @@ class LogClient implements Serializable {
   */
   void warn(Object input) {
     if (levelCheck(['DEBUG', 'INFO', 'WARN'])) {
-      this.steps.ansiColor('xterm') {
-        this.steps.println("\u001B[33m[Warning] ${getString(input)}\u001B[0m")
-      }
+      writeMsg("[Warning] ${getString(input)}", '33')
     }
   }
 
@@ -76,9 +79,7 @@ class LogClient implements Serializable {
   */
   void error(Object input) {
     if (levelCheck(['DEBUG', 'INFO', 'WARN', 'ERROR'])) {
-      this.steps.ansiColor('xterm') {
-        this.steps.println("\u001B[31m[Error] ${getString(input)}\u001B[0m")
-      }
+      writeMsg("[Error] ${getString(input)}", '31')
     }
   }
 
@@ -109,6 +110,16 @@ class LogClient implements Serializable {
     return prettyPrint(toJson(item))
   }
 
+  String writeMsg(Object input, String colorCode) {
+    if (this.printColor) {
+      this.steps.ansiColor('xterm') {
+        this.steps.println("\u001B[${colorCode}m${input}\u001B[0m")
+      }
+    } else {
+      this.steps.println(input)
+    }
+  }
+
   /**
   * Check if the current level should be logged.
   * @param levels The levels that you want to log to.
@@ -127,6 +138,11 @@ class LogClient implements Serializable {
   */
   private String getString(Object input) {
     return input.toString()
+  }
+
+  @NonCPS
+  private void useColor() {
+    this.printColor = pluginInstalled('ansicolor')
   }
 
 }
