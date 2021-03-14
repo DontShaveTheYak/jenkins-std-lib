@@ -11,3 +11,12 @@ repos:
     rev: v0.3.0
     hooks:
       - id: gradle-build
+  - repo: local
+    hooks:
+      - id: groovy-lint
+        name: Groovy Lint
+        language: docker_image
+        entry: nvuillam/npm-groovy-lint
+        args: ['--failon', 'warning', '-l' , 'warning', '-p', 'src']
+        files: src/*
+        pass_filenames: false

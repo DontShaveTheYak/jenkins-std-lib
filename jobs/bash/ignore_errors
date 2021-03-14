@@ -35,4 +35,12 @@ node() {
         error('Should stop on first error.')
     }
 
+    cmd = 'exit 55'
+
+    result = bash.ignoreErrors(cmd, false)
+
+    if ( result.exitCode != 55 ) {
+        error('Should capture the correct exitCode.')
+    }
+
 }
