@@ -1,7 +1,7 @@
 package org.dsty.jenkins
 
-import jenkins.model.Jenkins
 import com.cloudbees.groovy.cps.NonCPS
+import jenkins.model.Jenkins
 
 /**
   * Checks if a plugin is installed.
@@ -9,7 +9,7 @@ import com.cloudbees.groovy.cps.NonCPS
   * @return True if the plugin is installed.
   */
 @NonCPS
-boolean pluginInstalled(String shortName) {
+static Boolean pluginInstalled(String shortName) {
   List plugins = plugins()
 
   String plugin = plugins.find { it == shortName }
@@ -21,10 +21,10 @@ boolean pluginInstalled(String shortName) {
   * Returns the plugins currently installed on the
   * Jenkins. This does not check if a plugin is enabled
   * or active in the current build.
-  * @return The userScript formatted for bash.
+  * @return List of plugin shortNames/ID.
   */
 @NonCPS
-List<String> plugins() {
+static List<String> plugins() {
   return Jenkins.instance.pluginManager.plugins*.getShortName()
 }
 

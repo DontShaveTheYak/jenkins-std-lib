@@ -7,8 +7,8 @@ DontShaveTheYak presents the Jenkins Standard Library. A set of useful tools for
 
 Why use our library?
 * [Less Yak Shaving](https://seths.blog/2005/03/dont_shave_that/) for your team.
-* We fully ~~test~~ and lint this codebase.
-* Our Releases and Docs are automated.
+* We fully [test][test-url] and [lint][test-url] this codebase.
+* Our [Releases][releases-url] and [Docs][doc-url] are automated.
 * OpenSource and Free to use.
 
 [![Jenkins](https://cdn.freebiesupply.com/logos/large/2x/jenkins-logo-png-transparent.png)](https://www.jenkins.io/)
@@ -21,10 +21,7 @@ to use, and the url to reach it.
 
 ![Configure](.images/configure.PNG)
 
-*Note: Default version of master will get you the latest release. For production you should pin version to a [release](https://github.com/DontShaveTheYak/jenkins-std-lib/releases) tag.*
-
-The Jenkins Standard Library requires the following plugins:
-* AnsiColor - Used to provide color output for our built in logger.
+*Note: Default version of master will get you the latest release. For production you should pin Default version to a [release][releases-url] tag.*
 
 For more detailed information see the offical Jenkins [Shared Library](https://www.jenkins.io/doc/book/pipeline/shared-libraries/) documentation.
 
@@ -43,7 +40,7 @@ We recommend the following plugins:
         display: none;
   }
   ```
-* [OWASP Markup Formatter](https://plugins.jenkins.io/antisamy-markup-formatter/) - To properly render Global Variable documentation. Make sure to enable "Safe HTML" in the "Configure Global Security" page.
+* [AnsiColor](https://plugins.jenkins.io/ansicolor/) - To get color coded log messages from our logging package.
 
 ### Usage
 
@@ -52,11 +49,11 @@ Once you have installed our shared library you just need to reference it at the 
 @Library('jenkins-std-lib')
 ```
 
-For full documentation see [here](https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib/latest/index.html).
+For full javadoc documentation see [here][doc-url]. To see example Jenkinsfile's check out the [job](./jobs) directory.
 
-
-[test-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests?label=Tests
-[lint-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests?label=Lint
+[test-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests/master?label=Tests
+[lint-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests/master?label=Lint
 [test-url]: https://github.com/DontShaveTheYak/jenkins-std-lib/actions/workflows/test.yml
 [doc-badge]: https://javadoc.io/badge2/io.github.dontshavetheyak/jenkins-std-lib/javadoc.svg?cacheSeconds=3600
 [doc-url]: https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib
+[releases-url]: https://github.com/DontShaveTheYak/jenkins-std-lib/releases
