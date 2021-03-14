@@ -21,7 +21,7 @@ static Boolean pluginInstalled(String shortName) {
   * Returns the plugins currently installed on the
   * Jenkins. This does not check if a plugin is enabled
   * or active in the current build.
-  * @return The userScript formatted for bash.
+  * @return List of plugin shortNames/ID.
   */
 @NonCPS
 static List<String> plugins() {
