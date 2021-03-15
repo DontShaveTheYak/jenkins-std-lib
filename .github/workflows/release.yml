@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.base_ref == 'develop' || github.base_ref == 'master'
     outputs:
-      tag: ${{ steps.create_tag.outputs.tag }}
+      tag: ${{ steps.calculate.outputs.next_tag }}
     steps:
 
       - name: Checkout Code
