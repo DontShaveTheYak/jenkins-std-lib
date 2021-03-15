@@ -12,6 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fixed** for any bug fixes.
 - **Security** in case of vulnerabilities.
 
+## [0.5.0] - 03/14/2021
+
+### Added
+- Jenkins Instance Package
+- Precommit for local CICD
+
+## [0.2.9] - 03/12/2021
+
+### Added
+- Functional testing
+
+### Changed
+- CICD Release workflow
+
 ## [0.2.2] - 10/27/2020
 
 ### Changed
@@ -67,6 +81,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub workflow for unit testing
 - This changelog
 
+[0.5.0]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/0.2.9...0.5.0
+[0.2.9]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/0.2.2...0.2.9
 [0.2.2]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/v0.2.0...0.2.1
 [0.2.0]: https://github.com/DontShaveTheYak/jenkins-std-lib/compare/v0.1.2...v0.2.0
