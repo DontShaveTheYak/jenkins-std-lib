@@ -12,15 +12,25 @@ jobs:
     outputs:
       tag: ${{ steps.create_tag.outputs.tag }}
     steps:
-      - name: Set Tag Format
-        env:
-          BRANCH: ${{ github.base_ref }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Install dependencies
         run: |
-          if [ "$BRANCH" = "develop" ]; then
-              echo "TAG_FORMAT=%major%.%minor%.%patch%-SNAPSHOT" >> $GITHUB_ENV
-          else
-              echo "TAG_FORMAT=%major%.%minor%.%patch%" >> $GITHUB_ENV
-          fi
+          python -m pip install --upgrade pip
+          pip install -r tests/requirements.txt
+
+      - name: Get Latest Tag
+        id: latest_tag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+
+      - name: Calculate next tag
+        id: calculate
+        run: python tests/helpers/release.py ${{ steps.latest_tag.outputs.tag }} ${{ github.event.pull_request.number }} ${{ github.base_ref }}
 
       - name: Create Tag
         id: create_tag
@@ -31,6 +41,7 @@ jobs:
           release_branch: ${{ github.base_ref }}
           release_strategy: tag
           tag_format: ${{ env.TAG_FORMAT }}
+          tag: ${{ steps.calculate.outputs.next_tag }}
 
   publish:
     name: Publish Package
