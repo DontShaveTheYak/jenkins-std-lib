@@ -4,28 +4,34 @@ import com.cloudbees.groovy.cps.NonCPS
 import jenkins.model.Jenkins
 
 /**
-  * Checks if a plugin is installed.
-  * @param shortName The name of the plugin.
-  * @return True if the plugin is installed.
-  */
-@NonCPS
-static Boolean pluginInstalled(String shortName) {
-  List plugins = plugins()
+ * This class consists exclusively of static methods that operate on
+ * or returns information about the current Jenkins server.
+ */
+class Instance implements Serializable {
 
-  String plugin = plugins.find { it == shortName }
+  /**
+    * Checks if a plugin is installed.
+    * @param shortName The name of the plugin.
+    * @return True if the plugin is installed.
+    */
+  @NonCPS
+  static Boolean pluginInstalled(String shortName) {
+    List plugins = plugins()
 
-  return plugin as Boolean
+    String plugin = plugins.find { it == shortName }
+
+    return plugin as Boolean
+  }
+
+  /**
+    * Returns the plugins currently installed on the
+    * Jenkins. This does not check if a plugin is enabled
+    * or active in the current build.
+    * @return List of plugin shortNames/ID.
+    */
+  @NonCPS
+  static List<String> plugins() {
+    return Jenkins.instance.pluginManager.plugins*.getShortName()
+  }
+
 }
-
-/**
-  * Returns the plugins currently installed on the
-  * Jenkins. This does not check if a plugin is enabled
-  * or active in the current build.
-  * @return List of plugin shortNames/ID.
-  */
-@NonCPS
-static List<String> plugins() {
-  return Jenkins.instance.pluginManager.plugins*.getShortName()
-}
-
-return this

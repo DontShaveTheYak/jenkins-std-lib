@@ -10,17 +10,29 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.base_ref == 'develop' || github.base_ref == 'master'
     outputs:
-      tag: ${{ steps.create_tag.outputs.tag }}
+      tag: ${{ steps.calculate.outputs.next_tag }}
     steps:
-      - name: Set Tag Format
-        env:
-          BRANCH: ${{ github.base_ref }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2.2.0
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Install dependencies
         run: |
-          if [ "$BRANCH" = "develop" ]; then
-              echo "TAG_FORMAT=%major%.%minor%.%patch%-SNAPSHOT" >> $GITHUB_ENV
-          else
-              echo "TAG_FORMAT=%major%.%minor%.%patch%" >> $GITHUB_ENV
-          fi
+          python -m pip install --upgrade pip
+          pip install -r tests/requirements.txt
+
+      - name: Get Latest Tag
+        id: latest_tag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+
+      - name: Calculate next tag
+        id: calculate
+        run: python tests/helpers/release.py ${{ steps.latest_tag.outputs.tag }} ${{ github.event.pull_request.number }} ${{ github.base_ref }}
 
       - name: Create Tag
         id: create_tag
@@ -31,6 +43,7 @@ jobs:
           release_branch: ${{ github.base_ref }}
           release_strategy: tag
           tag_format: ${{ env.TAG_FORMAT }}
+          tag: ${{ steps.calculate.outputs.next_tag }}
 
   publish:
     name: Publish Package
@@ -59,19 +72,20 @@ jobs:
     needs: [tag, publish]
     steps:
       - name: Create Draft Release
+        uses: release-drafter/release-drafter@v5.14.0
         if: github.base_ref == 'develop'
-        uses: Roang-zero1/github-create-release-action@master
         with:
-          created_tag: ${{needs.tag.outputs.tag}}
-          create_draft: true
+          tag: ${{needs.tag.outputs.tag}}
+          version: ${{needs.tag.outputs.tag}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
+        uses: release-drafter/release-drafter@v5.14.0
         if: github.base_ref == 'master'
-        uses: Roang-zero1/github-create-release-action@master
         with:
-          created_tag: ${{needs.tag.outputs.tag}}
-          update_existing: true
+          tag: ${{needs.tag.outputs.tag}}
+          version: ${{needs.tag.outputs.tag}}
+          publish: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
