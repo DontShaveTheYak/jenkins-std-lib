@@ -72,11 +72,11 @@ jobs:
     needs: [tag, publish]
     steps:
       - name: Create Draft Release
+        uses: release-drafter/release-drafter@v5.12.1
         if: github.base_ref == 'develop'
-        uses: Roang-zero1/github-create-release-action@master
         with:
-          created_tag: ${{needs.tag.outputs.tag}}
-          create_draft: true
+          tag: ${{needs.tag.outputs.tag}}
+          version: ${{needs.tag.outputs.tag}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
