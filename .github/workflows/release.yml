@@ -81,10 +81,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
+        uses: release-drafter/release-drafter@v5.14.0
         if: github.base_ref == 'master'
-        uses: Roang-zero1/github-create-release-action@master
         with:
-          created_tag: ${{needs.tag.outputs.tag}}
-          update_existing: true
+          tag: ${{needs.tag.outputs.tag}}
+          version: ${{needs.tag.outputs.tag}}
+          publish: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
