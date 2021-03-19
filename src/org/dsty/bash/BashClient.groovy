@@ -1,8 +1,6 @@
 package org.dsty.bash
 
-import org.dsty.bash.Result
 import org.dsty.logging.LogClient
-import org.dsty.bash.ScriptError
 
 /**
  * Bash Client
@@ -40,7 +38,7 @@ class BashClient implements Serializable {
   */
   String formatScript(String userScript, Boolean consoleOutput=true, Boolean failFast=true) {
     String teeOutput = 'exec 2> >(tee -a stderr stdall) 1> >(tee -a stdout stdall)'
-    String exec = consoleOutput ? teeOutput : "exec 3>/dev/null 2> >(tee -a stderr stdall >&3) 1> >(tee -a stdout stdall >&3)"
+    String exec = consoleOutput ? teeOutput : 'exec 3>/dev/null 2> >(tee -a stderr stdall >&3) 1> >(tee -a stdout stdall >&3)'
 
     String script = """\
     #!/bin/bash
