@@ -1,8 +1,6 @@
 package org.dsty.bash
 
-import org.dsty.bash.Result
 import org.dsty.logging.LogClient
-import org.dsty.bash.ScriptError
 
 /**
  * Bash Client
