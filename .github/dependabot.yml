@@ -26,3 +26,10 @@ updates:
     labels:
       - "chore"
       - "patch"
+include-labels:
+  - 'feature'
+  - 'enhancement'
+  - 'fix'
+  - 'bugfix'
+  - 'bug'
+  - 'chore'
