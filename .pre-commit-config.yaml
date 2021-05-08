@@ -17,6 +17,6 @@ repos:
         name: Groovy Lint
         language: docker_image
         entry: nvuillam/npm-groovy-lint
-        args: ['--failon', 'warning', '-l' , 'warning', '-p', 'src']
-        files: src/*
+        args: ['--failon', 'warning', '-l' , 'warning', '-f', '**/*.groovy']
+        files: .*\.groovy
         pass_filenames: false
