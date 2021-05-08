@@ -15,6 +15,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           valid-labels: 'major, minor, patch'
           pull-request-number: ${{ github.event.pull_request.number }}
+          disable-reviews: true
 
       - name: Had change type label
         uses: jesusvasquez333/verify-pr-label-action@v1.4.0
@@ -22,3 +23,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           valid-labels: 'feature, enhancement, fix, bugfix, bug, chore'
           pull-request-number: ${{ github.event.pull_request.number }}
+          disable-reviews: true
