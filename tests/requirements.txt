@@ -9,7 +9,7 @@ filelock==3.0.12
 identify==2.1.2
 idna==2.10
 iniconfig==1.1.1
-nodeenv==1.5.0
+nodeenv==1.6.0
 packaging==20.9
 pluggy==0.13.1
 pre-commit==2.11.1
