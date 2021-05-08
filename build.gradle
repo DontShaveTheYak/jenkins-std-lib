@@ -18,7 +18,7 @@ plugins {
     // Needed for signing artifacts pushed to https://oss.sonatype.org/
     id 'signing'
 
-    id 'io.github.gradle-nexus.publish-plugin' version '1.0.0'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
 version = project.findProperty('CICD_TAG') ?: '0.0.0-DEV'
