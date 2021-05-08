@@ -27,6 +27,10 @@ def container(client: docker.DockerClient):
             lib_path: {
                 'bind': '/var/jenkins_home/pipeline-library',
                 'mode': 'ro'
+            },
+            '/var/run/docker.sock': {
+                'bind': '/var/run/docker.sock',
+                'mode': 'rw'
             }
         }
 
