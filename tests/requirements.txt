@@ -12,7 +12,7 @@ iniconfig==1.1.1
 nodeenv==1.6.0
 packaging==20.9
 pluggy==0.13.1
-pre-commit==2.11.1
+pre-commit==2.12.1
 py==1.10.0
 pyparsing==2.4.7
 pytest==6.2.4
