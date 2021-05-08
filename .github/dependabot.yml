@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/tests"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+    labels:
+      - "chore"
+      - "patch"
+
+  - package-ecosystem: "gradle"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+    labels:
+      - "chore"
+      - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+    labels:
+      - "chore"
+      - "patch"
