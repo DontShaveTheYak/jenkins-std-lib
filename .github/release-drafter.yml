@@ -18,3 +18,10 @@ template: |
   ## Changes
 
   $CHANGES
+include-labels:
+  - 'feature'
+  - 'enhancement'
+  - 'fix'
+  - 'bugfix'
+  - 'bug'
+  - 'chore'

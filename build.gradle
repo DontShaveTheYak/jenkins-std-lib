@@ -18,7 +18,7 @@ plugins {
     // Needed for signing artifacts pushed to https://oss.sonatype.org/
     id 'signing'
 
-    id 'io.github.gradle-nexus.publish-plugin' version '1.0.0'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
 version = project.findProperty('CICD_TAG') ?: '0.0.0-DEV'
@@ -121,8 +121,8 @@ repositories {
 
 dependencies {
     // Use the latest Groovy version for building this library
-    compileOnly('org.codehaus.groovy:groovy-all:2.5.11')
-    compileOnly('org.jenkins-ci.main:jenkins-core:2.85')
+    compileOnly('org.codehaus.groovy:groovy-all:3.0.8')
+    compileOnly('org.jenkins-ci.main:jenkins-core:2.291')
     compileOnly('com.cloudbees:groovy-cps:1.32')
 }
 
