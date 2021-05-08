@@ -2,6 +2,8 @@ name: PR
 
 on:
   pull_request_target:
+    branches:
+        - 'develop'
     types: [opened, labeled, unlabeled, synchronize]
 
 jobs:

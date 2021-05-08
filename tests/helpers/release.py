@@ -35,15 +35,15 @@ latest_tag = sys.argv[1]
 pull_request = sys.argv[2]
 branch = sys.argv[3]
 
-action_name = get_action(pull_request)
-
 action_methods = {
     'patch': 'bump_patch',
     'minor': 'bump_minor',
     'major': 'bump_major'
 }
 
-action = action_methods[action_name]
+if branch != "master":
+    action_name = get_action(pull_request)
+    action = action_methods[action_name]
 
 next_version: str = ''
 
@@ -55,9 +55,10 @@ release_tag = response['tag_name']
 print(f'Latest release is {release_tag}')
 
 if branch == 'master':
-    version = semver.VersionInfo.parse(release_tag)
-    next_version = do_action(action, version)
-    set_output('next_tag', next_version)
+    print("This release is a final release!")
+    base_tag = latest_tag.split("-")[0]
+    bump_rule = "None"
+    set_output('next_tag', base_tag)
     sys.exit(0)
 
 
