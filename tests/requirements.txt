@@ -7,7 +7,7 @@ distlib==0.3.1
 docker==5.0.0
 filelock==3.0.12
 identify==2.1.2
-idna==2.10
+idna==3.1
 iniconfig==1.1.1
 nodeenv==1.6.0
 packaging==20.9
@@ -17,7 +17,7 @@ py==1.10.0
 pyparsing==2.4.7
 pytest==6.2.4
 PyYAML==5.4.1
-requests==2.25.1
+requests==2.15.1
 semver==2.13.0
 six==1.15.0
 toml==0.10.2
