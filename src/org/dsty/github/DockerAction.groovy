@@ -66,7 +66,9 @@ class DockerAction implements GithubAction, Serializable {
   String run(String containerArgs) {
     this.log.info("Running Action ${this.name}")
 
-    Result result = this.bash.silent("docker run ${this.name} ${containerArgs}")
+    String buildSlug = "${this.steps.env.BUILD_TAG}-${this.name}"
+
+    Result result = this.bash.silent("docker run --rm --name ${buildSlug} ${this.name} ${containerArgs}")
 
     this.log.debug(result.stdOut)
 
