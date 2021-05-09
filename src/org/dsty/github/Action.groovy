@@ -11,12 +11,14 @@ class Action implements Serializable {
   /**
    * Workflow script representing the jenkins build.
    */
-  Object steps
+  private final Object steps
 
   /**
    * Logging client
    */
-  LogClient log
+  private final LogClient log
+
+  private GithubAction action
 
   /**
    * Default Constructor
@@ -28,40 +30,51 @@ class Action implements Serializable {
   }
 
   /**
-  * Formats a bash script by adding the shebang,
-  * setting the verbose level and sourcing bashrc.
-  * @param userScript The bash script you want to run.
-  * @param consoleOutput If you want the script results
-  *                      to be printed out to console.
-  * @param failFast If you want the script to stop on first
-  *                 non zero exit code.
-  * @return The userScript formatted for bash.
+  * Handles the fetching and setup of a Github Action.
+  * @param name The name of the action to setup.
+  * @return The action that is now ready to run.
   */
-  GithubAction uses(String name) {
+  Action uses(String name) {
     this.log.info("Preparing Github action ${name}.")
 
     Map scmArgs = parseName(name)
 
     ActionFactory factory = new ActionFactory(this.steps)
 
-    GithubAction action = factory.makeAction(scmArgs)
+    this.action = factory.makeAction(scmArgs)
 
-    return action
+    return this
   }
 
-  private static Map parseName(String name) {
+  /**
+  * Run the action with an optional Map of inputs.
+  * @param inputs The key,value pairs that will be passed to the action.
+  * @return The outputs from the action.
+  */
+  Map with(Map inputs = [:]) {
+
+    return this.action.with(inputs)
+
+  }
+
+  /**
+  * Parses the action's id into a Github Org, Repo and Ref.
+  * @param actionID The id for the Github action you want to run.
+  * @return The Github Org, Repo and Ref.
+  */
+  private static Map parseName(String actionID) {
     Map results = [:]
 
     String fullName
     List parts
 
-    if (name.contains('@')) {
-      parts = name.tokenize('@')
+    if (actionID.contains('@')) {
+      parts = actionID.tokenize('@')
       fullName = parts[0]
       results.Ref = parts[1]
     }
 
-    parts = fullName ? fullName.tokenize('/') : name.tokenize('/')
+    parts = fullName ? fullName.tokenize('/') : actionID.tokenize('/')
 
     results.Name = parts[1]
     results.Org = parts[0]
