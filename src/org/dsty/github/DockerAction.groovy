@@ -134,11 +134,7 @@ class DockerAction implements GithubAction, Serializable {
 
     Map filteredInputs = inputs.findAll { it.value != 'REQUIRED' }
 
-    Map normalInputs = filteredInputs.collectEntries { key, value ->
-      [(this.normalizeVariable(key)): value]
-    }
-
-    return normalInputs
+    return filteredInputs
 
   }
 
@@ -178,7 +174,7 @@ class DockerAction implements GithubAction, Serializable {
   @NonCPS
   String normalizeVariable(String inputName) {
 
-    return inputName.toUpperCase().replace('-', '_').replace(' ', '_')
+    return inputName.toUpperCase().replace(' ', '_')
 
   }
 
@@ -194,9 +190,8 @@ class DockerAction implements GithubAction, Serializable {
   String normalizeTemplate(String template) {
 
     String templateVar = (template =~ /(?<=\.)[\w\-]*/).findAll().first()
-    String normalVar = normalizeVariable(templateVar)
 
-    return (template =~ /(?<=\.)[\w\-]*/).replaceFirst(normalVar)
+    return (template =~ /\.[\w\-]*/).replaceFirst("['${templateVar}']")
 
   }
 
