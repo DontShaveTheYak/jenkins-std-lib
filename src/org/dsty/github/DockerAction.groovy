@@ -1,4 +1,4 @@
-/* groovylint-disable BuilderMethodWithSideEffects, DuplicateStringLiteral, FactoryMethodName */
+/* groovylint-disable BuilderMethodWithSideEffects, DuplicateStringLiteral, FactoryMethodName, ThrowException, UnnecessaryCollectCall */
 package org.dsty.github
 
 import org.dsty.bash.BashClient
@@ -41,16 +41,24 @@ class DockerAction implements GithubAction, Serializable {
     this.bash = new BashClient(steps)
   }
 
-  Map with(Map args) {
+  Map with(Map args = [:]) {
     this.build()
 
-    String containerArgs = args.collect { "'${it.value}'" }.join(' ')
+    Map metadata = this.loadMetadata()
+
+    this.log.error(metadata)
+
+    Map finalArgs = this.loadDefaults(args, metadata)
+
+    List runArgs = metadata.get('runs', [:]).get('args', [])
+
+    String containerArgs =  runArgs ? this.renderArgs(runArgs, finalArgs) : ''
 
     String output = this.run(containerArgs)
 
     this.steps.println(cleanOutput(output))
 
-    return parseOutputs(output)
+    return this.parseOutputs(output)
   }
 
   void build() {
@@ -64,9 +72,10 @@ class DockerAction implements GithubAction, Serializable {
   }
 
   String run(String containerArgs) {
-    this.log.info("Running Action ${this.name}")
 
-    String buildSlug = "${this.steps.env.BUILD_TAG}-${this.name}"
+    String buildSlug = "${this.steps.env.BUILD_TAG}-${this.name}".replaceAll(' ', '-')
+
+    this.log.info("Running Action ${this.name}")
 
     Result result = this.bash.silent("docker run --rm --name ${buildSlug} ${this.name} ${containerArgs}")
 
@@ -75,25 +84,132 @@ class DockerAction implements GithubAction, Serializable {
     return result.stdOut
   }
 
-  @NonCPS
-  Map parseOutputs(String output) {
-      Map outputs = [:]
+  Map loadMetadata() {
 
-      List matches = (output =~ /(?m)^::.*$/).findAll()
+    Map metadata
 
-      for (match in matches) {
-        String outputName = (match =~ /(?m)(?<=name=).*(?=::)/).findAll().first()
-        String outputValue = (match =~ /(?m)::.*::(.*$)/).findAll().first()[1]
+    this.log.debug("Loading metadata for ${this.name}")
 
-        outputs[outputName] = outputValue
+    this.steps.dir(this.name) {
+
+      String metadataFile = this.steps.fileExists('action.yml') == true ? 'action.yml' : 'action.yaml'
+
+      if (!this.steps.fileExists(metadataFile)) {
+        throw new Exception("Could not locate action.yml/yml metadata file for ${this.name}")
       }
 
-      return outputs
+      metadata = this.steps.readYaml(file: metadataFile)
+
+    }
+
+    this.log.debug(metadata)
+
+    return metadata
+
+  }
+
+  Map loadDefaults(Map userArgs, Map metadata) {
+
+    Map inputs = [:]
+
+    if (metadata.inputs) {
+      inputs = metadata.inputs.collectEntries { inputName, inputMeta ->
+        String defaultValue = inputMeta.default ?: ''
+
+        String finalValue = userArgs["${inputName}"] ?: defaultValue
+
+        if (!finalValue && inputMeta.required) {
+          finalValue = 'REQUIRED'
+        }
+
+        [(inputName): finalValue]
+      }
+    }
+
+    List required = inputs.findAll { it.value == 'REQUIRED' }.collect { it.key }
+
+    if (required) {
+      throw new Exception("No value was provided for these required inputs: ${required.join(', ')}")
+    }
+
+    Map filteredInputs = inputs.findAll { it.value != 'REQUIRED' }
+
+    Map normalInputs = filteredInputs.collectEntries { key, value ->
+      [(this.normalizeVariable(key)): value]
+    }
+
+    return normalInputs
+
+  }
+
+  String renderArgs(List args, Map inputs) {
+
+    List renderedArgs = args.collect { it -> renderTemplate(it, inputs) }
+
+    String containerArgs = renderedArgs.collect { "'${it.value}'" }.join(' ')
+
+    return containerArgs
+
+  }
+
+  @NonCPS
+  Map parseOutputs(String output) {
+
+    Map outputs = [:]
+
+    List matches = (output =~ /(?m)^::.*$/).findAll()
+
+    for (match in matches) {
+      String outputName = (match =~ /(?m)(?<=name=).*(?=::)/).findAll().first()
+      String outputValue = (match =~ /(?m)::.*::(.*$)/).findAll().first()[1]
+
+      outputs[outputName] = outputValue
+    }
+
+    return outputs
+
   }
 
   @NonCPS
   String cleanOutput(String output) {
       return (output =~ /(?m)^::.*$/).replaceAll('')
+  }
+
+  @NonCPS
+  String normalizeVariable(String inputName) {
+
+    return inputName.toUpperCase().replace('-', '_').replace(' ', '_')
+
+  }
+
+  @NonCPS
+  String convertVariable(String arg) {
+
+    /* groovylint-disable-next-line GStringExpressionWithinString */
+    return (arg =~ /\$\{\{(.*)}}/).replaceAll('\\${$1}')
+
+  }
+
+  @NonCPS
+  String normalizeTemplate(String template) {
+
+    String templateVar = (template =~ /(?<=\.)[\w\-]*/).findAll().first()
+    String normalVar = normalizeVariable(templateVar)
+
+    return (template =~ /(?<=\.)[\w\-]*/).replaceFirst(normalVar)
+
+  }
+
+  @NonCPS
+  String renderTemplate(String arg, Map inputs) {
+
+    String template = convertVariable(arg)
+    String normalTemplate = normalizeTemplate(template)
+
+    groovy.text.SimpleTemplateEngine engine = new groovy.text.SimpleTemplateEngine()
+
+    return engine.createTemplate(normalTemplate).make(['inputs': inputs]).toString()
+
   }
 
 }
