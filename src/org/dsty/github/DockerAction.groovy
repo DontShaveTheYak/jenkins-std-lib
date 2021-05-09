@@ -42,19 +42,26 @@ class DockerAction implements GithubAction, Serializable {
   }
 
   Map with(Map args = [:]) {
-    this.build()
 
-    Map metadata = this.loadMetadata()
+    Map metadata
 
-    this.log.error(metadata)
+    String workspace = this.steps.env.WORKSPACE_TMP ?: this.steps.env.WORKSPACE
 
-    Map finalArgs = this.loadDefaults(args, metadata)
+    this.steps.dir("${workspace}/${this.name}") {
+
+      metadata = this.loadMetadata()
+
+      this.build()
+
+    }
+
+    Map inputs = this.loadDefaults(args, metadata)
 
     List runArgs = metadata.get('runs', [:]).get('args', [])
 
-    String containerArgs =  runArgs ? this.renderArgs(runArgs, finalArgs) : ''
+    String containerArgs =  runArgs ? this.renderArgs(runArgs, inputs) : ''
 
-    String output = this.run(containerArgs)
+    String output = this.run(containerArgs, inputs)
 
     this.steps.println(cleanOutput(output))
 
@@ -62,45 +69,53 @@ class DockerAction implements GithubAction, Serializable {
   }
 
   void build() {
+
     this.log.info("Building Docker Container for ${this.name}")
 
-    this.steps.dir(this.name) {
-      Result result = this.bash.silent("docker build -t ${this.name} .")
+    Result result = this.bash.silent("docker build -t ${this.name} .")
 
-      this.log.debug(result.output)
-    }
+    this.log.debug(result.output)
+
   }
 
-  String run(String containerArgs) {
+  String run(String containerArgs, Map inputs) {
 
     String buildSlug = "${this.steps.env.BUILD_TAG}-${this.name}".replaceAll(' ', '-')
 
+    Map renderedEnvVars = inputs.collectEntries { [("INPUT_${ normalizeVariable(it.key) }".toString()): it.value] }
+
+    String envVars = renderedEnvVars.collect { "-e ${it.key}" }.join(' ')
+
+    /* groovylint-disable-next-line SpaceAfterOpeningBrace, SpaceBeforeClosingBrace */
+    List containerEnv = renderedEnvVars.collect {"${it.key}=${it.value }"}
+
     this.log.info("Running Action ${this.name}")
 
-    Result result = this.bash.silent("docker run --rm --name ${buildSlug} ${this.name} ${containerArgs}")
+    Result result
+
+    this.steps.withEnv(containerEnv) {
+
+      result = this.bash.silent("docker run --rm --name ${buildSlug} ${envVars} ${this.name} ${containerArgs}")
+
+    }
 
     this.log.debug(result.stdOut)
 
     return result.stdOut
+
   }
 
   Map loadMetadata() {
 
-    Map metadata
-
     this.log.debug("Loading metadata for ${this.name}")
 
-    this.steps.dir(this.name) {
+    String metadataFile = this.steps.fileExists('action.yml') == true ? 'action.yml' : 'action.yaml'
 
-      String metadataFile = this.steps.fileExists('action.yml') == true ? 'action.yml' : 'action.yaml'
-
-      if (!this.steps.fileExists(metadataFile)) {
-        throw new Exception("Could not locate action.yml/yml metadata file for ${this.name}")
-      }
-
-      metadata = this.steps.readYaml(file: metadataFile)
-
+    if (!this.steps.fileExists(metadataFile)) {
+      throw new Exception("Could not locate action.yml/yml metadata file for ${this.name}")
     }
+
+    Map metadata = this.steps.readYaml(file: metadataFile)
 
     this.log.debug(metadata)
 
@@ -145,6 +160,12 @@ class DockerAction implements GithubAction, Serializable {
     String containerArgs = renderedArgs.collect { "'${it.value}'" }.join(' ')
 
     return containerArgs
+
+  }
+
+  String renderEnvVars(Map inputs) {
+
+    return inputs.collectEntries { [("INPUT_${normalizeVariable(it.key)}".toString()): it.value] }
 
   }
 

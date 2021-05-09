@@ -46,7 +46,9 @@ class ActionFactory implements Serializable {
 
     String actionType
 
-    this.steps.dir(scmArgs.Name) {
+    String workspace = this.steps.env.WORKSPACE_TMP ?: this.steps.env.WORKSPACE
+
+    this.steps.dir("${workspace}/${scmArgs.Name}") {
       this.steps.checkout(
         changelog: false,
         poll: false,
