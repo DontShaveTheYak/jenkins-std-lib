@@ -46,7 +46,4 @@ jobs:
           pip install -r tests/requirements.txt
 
       - name: Test with pytest
-        env:
-          RUNNER_IMAGE: shadycuz/jenkins-std-lib
-        run: |
-          pytest
+        run: pytest
