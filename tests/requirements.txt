@@ -22,5 +22,5 @@ semver==2.13.0
 six==1.15.0
 toml==0.10.2
 urllib3==1.26.4
-virtualenv==20.4.2
+virtualenv==20.4.6
 websocket-client==0.59.0
