@@ -1,3 +1,4 @@
+/* groovylint-disable DuplicateStringLiteral */
 package org.dsty.github.actions
 
 import org.dsty.bash.BashClient
@@ -75,27 +76,64 @@ class Workflow implements Serializable {
 
     this.log.info('Installing Act.')
 
-    Result result = this.bash.ignoreErrors(/act --version | cut -d' ' -f3/, false, true)
+    Result result = this.bash.ignoreErrors(/set -o pipefail; act --version | cut -d' ' -f3/, false, true)
 
-    if (result.exitCode == 0 && !this.version) {
+    Closure alreadyInstalled = {
 
-      this.log.info("Version ${result.stdOut} of act is already installed.")
-      return
+      this.version = "v${result.stdOut}"
 
+      this.log.info("Version ${this.version} of act is already installed.")
     }
 
-    if (!this.version) {
+    Closure installLatest = {
 
       this.log.info('Downloading the latest version.')
       this.bash.call('curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash')
 
     }
 
-    this.log.info("Downloading version ${this.version}.")
+    Closure installVersion = {
+
+      this.log.info("Downloading version ${this.version}.")
+      this.bash.call("""\
+        curl https://raw.githubusercontent.com/nektos/act/master/install.sh -o .install_act
+        chmod +x .install_act
+        sudo bash .install_act ${this.version}"""
+      )
+
+      this.version = null
+
+    }
+
+    Closure installCMD = this.version ? installVersion : installLatest
+
+    Closure cmd = result.exitCode == 0 && !this.version ? alreadyInstalled : installCMD
 
     this.steps.dir(this.steps.env.WORKSPACE) {
 
-      this.bash.call('curl https://raw.githubusercontent.com/nektos/act/master/install.sh -o .install_act | sudo bash .install_act')
+      cmd()
+
+    }
+
+    if (!this.version) {
+
+      String version = this.bash.call(/set -o pipefail; act --version | cut -d' ' -f3/).stdOut
+      this.version = "v${version}"
+
+    }
+
+    String homeDir = this.bash.call('echo ~').stdOut
+
+    if (!this.steps.fileExists("${homeDir}/.actrc")) {
+
+      // We have to write out a config file to make act work headless
+      this.bash.call('''\
+        cat <<EOT >> ~/.actrc
+        -P ubuntu-latest=catthehacker/ubuntu:act-latest
+        -P ubuntu-20.04=catthehacker/ubuntu:act-20.04
+        -P ubuntu-18.04=catthehacker/ubuntu:act-18.04
+        EOT'''.stripIndent()
+      )
 
     }
 
