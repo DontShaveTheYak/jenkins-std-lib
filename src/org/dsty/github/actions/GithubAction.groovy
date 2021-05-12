@@ -1,4 +1,4 @@
-package org.dsty.github
+package org.dsty.github.actions
 
 /**
  * Runs Github Actions.

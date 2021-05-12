@@ -1,12 +1,12 @@
 /* groovylint-disable DuplicateStringLiteral */
-package org.dsty.github
+package org.dsty.github.actions
 
 import org.dsty.logging.LogClient
 
 /**
  * Runs Github Actions.
  */
-class Action implements Serializable {
+class Step implements Serializable {
 
   /**
    * Workflow script representing the jenkins build.
@@ -24,7 +24,7 @@ class Action implements Serializable {
    * Default Constructor
    * @param steps The workflow script representing the jenkins build.
    */
-  Action(Object steps) {
+  Step(Object steps) {
     this.steps = steps
     this.log = new LogClient(steps)
   }
@@ -34,7 +34,7 @@ class Action implements Serializable {
   * @param name The name of the action to setup.
   * @return The action that is now ready to run.
   */
-  Action uses(String name) {
+  Step uses(String name) {
     this.log.info("Preparing Github action ${name}.")
 
     Map scmArgs = parseName(name)

@@ -1,5 +1,5 @@
 /* groovylint-disable BuilderMethodWithSideEffects, DuplicateStringLiteral, FactoryMethodName, ThrowException, UnnecessaryCollectCall */
-package org.dsty.github
+package org.dsty.github.actions
 
 import org.dsty.bash.BashClient
 import org.dsty.bash.Result
