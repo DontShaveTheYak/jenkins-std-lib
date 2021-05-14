@@ -1,10 +1,9 @@
-/* groovylint-disable DuplicateStringLiteral */
 package org.dsty.github.actions
 
 import org.dsty.logging.LogClient
 
 /**
- * Runs Github Actions.
+ * Runs a Github Actions step.
  */
 class Step implements Serializable {
 
@@ -18,10 +17,20 @@ class Step implements Serializable {
    */
   private final LogClient log
 
-  private GithubAction action
-
   /**
    * Default Constructor
+   * <pre>{@code
+   * import org.dsty.github.actions.Step
+   *node() {
+   *  Step action = new Step(this)
+   *  Map options = [
+   *      'uses': 'actions/hello-world-docker-action@master',
+   *      'with': [
+   *          'who-to-greet': 'Mona the Octocat'
+   *      ]
+   *  ]
+   *  action(options)
+   *&#125;}</pre>
    * @param steps The workflow script representing the jenkins build.
    */
   Step(Object steps) {
@@ -30,57 +39,36 @@ class Step implements Serializable {
   }
 
   /**
-  * Handles the fetching and setup of a Github Action.
-  * @param name The name of the action to setup.
-  * @return The action that is now ready to run.
-  */
-  Step uses(String name) {
-    this.log.info("Preparing Github action ${name}.")
+   * Runs the Github Action Step.
+   * @param options The valid keys and values can be found the <a href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idsteps">here</a>.
+   * @return The outputs from the Action.
+   */
+  Map call(Map options) {
 
-    Map scmArgs = parseName(name)
+    options.env = options.env ?: [:]
+
+    if (options.if == null) {
+
+      options.if = true
+
+    }
+
+    if (!options.if) {
+
+      this.log.info("Skipping ${options.stepName}.")
+      return [:]
+    }
+
+    options.workspace = this.steps.env.WORKSPACE_TMP ?: this.steps.env.WORKSPACE
 
     ActionFactory factory = new ActionFactory(this.steps)
 
-    this.action = factory.makeAction(scmArgs)
+    GithubAction action = factory.makeAction(options)
 
-    return this
-  }
+    Map outputs = action.run()
 
-  /**
-  * Run the action with an optional Map of inputs.
-  * @param inputs The key,value pairs that will be passed to the action.
-  * @return The outputs from the action.
-  */
-  Map with(Map inputs = [:]) {
+    return outputs
 
-    return this.action.with(inputs)
-
-  }
-
-  /**
-  * Parses the action's id into a Github Org, Repo and Ref.
-  * @param actionID The id for the Github action you want to run.
-  * @return The Github Org, Repo and Ref.
-  */
-  private static Map parseName(String actionID) {
-    Map results = [:]
-
-    String fullName
-    List parts
-
-    if (actionID.contains('@')) {
-      parts = actionID.tokenize('@')
-      fullName = parts[0]
-      results.Ref = parts[1]
-    }
-
-    parts = fullName ? fullName.tokenize('/') : actionID.tokenize('/')
-
-    results.Name = parts[1]
-    results.Org = parts[0]
-    results.Ref = results.Ref ?: 'master'
-
-    return results
   }
 
 }
