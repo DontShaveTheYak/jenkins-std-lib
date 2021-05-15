@@ -50,17 +50,17 @@ class Workflow implements Serializable {
   }
 
   /**
-    * Installs and then runs <strong>act</strong>.
-    * <p> The default event is <strong>push</strong> to change it to <strong>pull_request</strong>:</p>
-    * <pre>{@code
-    * import org.dsty.github.actions.Workflow
-    *node() {
-    *  Workflow workflow = new Workflow(this)
-    *  workflow('pull_request')
-    *&#125;}</pre>
-    * @param args The arguments passed directly to <strong>act</strong>. See <strong>act</strong> <a href="https://github.com/nektos/act#commands">docs</a>.
-    * @return The output from the <strong>act</strong> command.
-    */
+   * Installs and then runs <strong>act</strong>.
+   * <p> The default event is <strong>push</strong> to change it to <strong>pull_request</strong>:</p>
+   * <pre>{@code
+   * import org.dsty.github.actions.Workflow
+   *node() {
+   *  Workflow workflow = new Workflow(this)
+   *  workflow('pull_request')
+   *&#125;}</pre>
+   * @param args The arguments passed directly to <strong>act</strong>. See <strong>act</strong> <a href="https://github.com/nektos/act#commands">docs</a>.
+   * @return The output from the <strong>act</strong> command.
+   */
   String call(String args = '') throws ScriptError {
     this.install()
 
@@ -68,10 +68,10 @@ class Workflow implements Serializable {
   }
 
   /**
-    * Installs <strong>act</strong> by first checking if it is already installed and
-    * if not then installs the latest version. The property {@link #version} can be set to install
-    * a specific version.
-    */
+   * Installs <strong>act</strong> by first checking if it is already installed and
+   * if not then installs the latest version. The property {@link #version} can be set to install
+   * a specific version.
+   */
   void install() throws ScriptError {
 
     this.log.info('Installing Act.')
@@ -140,10 +140,10 @@ class Workflow implements Serializable {
   }
 
   /**
-    * Calls the <strong>act</strong> binary with the supplied arugments.
-    * @param args The arguments passed directly to <strong>act</strong>. See <strong>act</strong> <a href="https://github.com/nektos/act#commands">docs</a>.
-    * @return The output from the <strong>act</strong> command.
-    */
+   * Calls the <strong>act</strong> binary with the supplied arugments.
+   * @param args The arguments passed directly to <strong>act</strong>. See <strong>act</strong> <a href="https://github.com/nektos/act#commands">docs</a>.
+   * @return The output from the <strong>act</strong> command.
+   */
   String run(String args) throws ScriptError {
 
     Result result = this.bash.call("act ${args}")
