@@ -1,4 +1,4 @@
-/* groovylint-disable BuilderMethodWithSideEffects, DuplicateStringLiteral, FactoryMethodName, ThrowException, UnnecessaryCollectCall */
+/* groovylint-disable DuplicateStringLiteral, ThrowException, UnnecessaryCollectCall */
 package org.dsty.github.actions
 
 import org.dsty.bash.BashClient
@@ -14,17 +14,17 @@ class DockerAction implements GithubAction, Serializable {
   /**
    * Workflow script representing the jenkins build.
    */
-  Object steps
+  final private Object steps
 
   /**
    * Logging client
    */
-  LogClient log
+  final private LogClient log
 
   /**
    * Bash Client
    */
-  BashClient bash
+  final private BashClient bash
 
   /**
    * The name of the action.
@@ -32,7 +32,19 @@ class DockerAction implements GithubAction, Serializable {
   String name
 
   /**
+   * The options from the {@link org.dsty.github.actions.Step#call(java.util.Map) Step}.
+   */
+  Map options
+
+  /**
+   * The metadata from action.yml/yaml file.
+   */
+  Map metadata
+
+  /**
    * Default Constructor
+   * <p>Using this Class directly in a Jenkins pipeline is an Advanced
+   * use case. Most people should just use {@link org.dsty.github.actions.Step#Step Step}.
    * @param steps The workflow script representing the jenkins build.
    */
   DockerAction(Object steps) {
@@ -41,104 +53,171 @@ class DockerAction implements GithubAction, Serializable {
     this.bash = new BashClient(steps)
   }
 
-  Map with(Map args = [:]) {
-
-    Map metadata
-
-    String workspace = this.steps.env.WORKSPACE_TMP ?: this.steps.env.WORKSPACE
-
-    this.steps.dir("${workspace}/${this.name}") {
-
-      metadata = this.loadMetadata()
-
-      this.build()
-
-    }
-
-    Map inputs = this.loadDefaults(args, metadata)
-
-    List runArgs = metadata.get('runs', [:]).get('args', [])
-
-    String containerArgs =  runArgs ? this.renderArgs(runArgs, inputs) : ''
-
-    String output = this.run(containerArgs, inputs)
-
-    this.steps.println(cleanOutput(output))
-
-    return this.parseOutputs(output)
+  /**
+   * Options are mix of values that come from either {@link org.dsty.github.actions.Step#Step Step}
+   * or the {@link org.dsty.github.actions.ActionFactory#ActionFactory ActionFactory}. They why it's
+   * prefered to use those classes over this one directly.
+   * @param options used to configure and run this Github Action.
+   */
+  void setOptions(Map options) {
+    this.options = options
+    this.name = options.actionID
+    this.metadata = options.metadata
   }
 
-  void build() {
+  /**
+   * This method will prepare the Action, run the action and then parse the output.
+   * @returns the outputs from the action.
+   */
+  Map run() {
+
+    String imageID = this.dockerBuild()
+
+    Map outputs = this.actionRun(imageID)
+
+    return outputs
+
+  }
+
+  /**
+   * Will either build the container image or use the
+   * image specified in the {@link #metadata}.
+   * @returns the docker image id.
+   */
+  String dockerBuild() {
+
+    if (this.metadata.runs.image.contains('docker://')) {
+      imageID = this.metadata.runs.image.replace('docker://', '')
+      return imageID
+    }
 
     this.log.info("Building Docker Container for ${this.name}")
 
-    Result result = this.bash.silent("docker build -t ${this.name} .")
+    this.steps.dir("${this.options.workspace}/${this.name}") {
 
-    this.log.debug(result.output)
+      Result result = this.bash.silent("docker build -t ${this.name} .")
+
+      this.log.debug(result.output)
+
+    }
+
+    return this.name
 
   }
 
-  String run(String containerArgs, Map inputs) {
+  /**
+   * Runs the action using the values configued in
+   * {@link #metadata metadata.runs}
+   * @param imageID the docker image to use.
+   * @returns the outputs from the action.
+   */
+  Map actionRun(String imageID) {
 
-    String buildSlug = "${this.steps.env.BUILD_TAG}-${this.name}".replaceAll(' ', '-')
-
-    Map renderedEnvVars = inputs.collectEntries { [("INPUT_${ normalizeVariable(it.key) }".toString()): it.value] }
-
-    String envVars = renderedEnvVars.collect { "-e ${it.key}" }.join(' ')
-
-    /* groovylint-disable-next-line SpaceAfterOpeningBrace, SpaceBeforeClosingBrace */
-    List containerEnv = renderedEnvVars.collect {"${it.key}=${it.value }"}
+    Map inputs = this.loadDefaults()
 
     this.log.info("Running Action ${this.name}")
 
-    Result result
+    List runArgs = metadata.runs.get('args', [])
 
+    String containerArgs =  runArgs ? this.renderArgs(runArgs, inputs) : ''
+
+    Map renderedEnvVars = inputs.collectEntries { [("INPUT_${ this.normalizeVariable(it.key) }".toString()): it.value] }
+
+    Map finalEnvVars = renderedEnvVars << this.options.env
+
+    String envVars = finalEnvVars.collect { "-e ${it.key}" }.join(' ')
+
+    /* groovylint-disable-next-line SpaceAfterOpeningBrace, SpaceBeforeClosingBrace */
+    List containerEnv = finalEnvVars.collect {"${it.key}=${it.value }"}
+
+    String buildSlug = "${this.steps.env.BUILD_TAG}-${this.name}".replaceAll(' ', '-')
+
+    String entryFlag = '--entrypoint'
+
+    String entryPoint
+
+    Map outputs = [:]
+
+    // pre and post if not currently supported.
     this.steps.withEnv(containerEnv) {
 
-      result = this.bash.silent("docker run --rm --name ${buildSlug} ${envVars} ${this.name} ${containerArgs}")
+      if (this.metadata.runs['pre-entrypoint']) {
+
+        this.log.debug("${this.name} - Running pre-entrypoint.")
+
+        entryPoint = "${entryFlag} ${this.metadata.runs['pre-entrypoint']}"
+
+        outputs << this.dockerRun("${buildSlug}-pre", imageID, envVars, containerArgs, entryPoint)
+
+      }
+
+      entryPoint = this.metadata.runs.entrypoint ? "${entryFlag} ${this.metadata.runs.entryPoint}" : ''
+
+      this.log.debug("${this.name} - Running main entrypoint.")
+
+      outputs << this.dockerRun(buildSlug, imageID, envVars, containerArgs, entryPoint)
+
+      if (this.metadata.runs['post-entrypoint']) {
+
+        this.log.debug("${this.name} - Running post-entrypoint.")
+
+        entryPoint = "${entryFlag} ${this.metadata.runs['post-entrypoint']}"
+
+        outputs << this.dockerRun("${buildSlug}-pre", imageID, envVars, containerArgs, entryPoint)
+
+      }
 
     }
+
+    return outputs
+
+  }
+
+  /**
+   * Runs a docker container and parses it's outputs.
+   * @param containerName the name of the container.
+   * @param imageID the docker image to use.
+   * @param envVars the environment vars to pass to docker run.
+   * @param containerArgs the argurments to pass to the entrypoint.
+   * @param entryPoint the entrpoint to use or an empty string to use containers entrypoint.
+   * @returns the outputs from the action.
+   */
+  Map dockerRun(String containerName, String imageID, String envVars, String containerArgs, String entryPoint) {
+
+    Result result = this.bash.silent("docker run --rm --name ${containerName} ${envVars} ${entryPoint} ${imageID} ${containerArgs}")
 
     this.log.debug(result.stdOut)
 
-    return result.stdOut
+    this.steps.println(cleanOutput(result.stdOut))
+
+    return this.parseOutputs(result.stdOut)
 
   }
 
-  Map loadMetadata() {
-
-    this.log.debug("Loading metadata for ${this.name}")
-
-    String metadataFile = this.steps.fileExists('action.yml') == true ? 'action.yml' : 'action.yaml'
-
-    if (!this.steps.fileExists(metadataFile)) {
-      throw new Exception("Could not locate action.yml/yml metadata file for ${this.name}")
-    }
-
-    Map metadata = this.steps.readYaml(file: metadataFile)
-
-    this.log.debug(metadata)
-
-    return metadata
-
-  }
-
-  Map loadDefaults(Map userArgs, Map metadata) {
+  /**
+   * Parses the metadata for inputs and sets the default value
+   * or used the value from {@link #options}.
+   * @returns the configued inputs.
+   */
+  Map loadDefaults() {
 
     Map inputs = [:]
 
-    if (metadata.inputs) {
-      inputs = metadata.inputs.collectEntries { inputName, inputMeta ->
+    if (this.metadata.inputs) {
+
+      inputs = this.metadata.inputs.collectEntries { inputName, inputMeta ->
         String defaultValue = inputMeta.default ?: ''
 
-        String finalValue = userArgs["${inputName}"] ?: defaultValue
+        String finalValue = this.options.with["${inputName}"] ?: defaultValue
 
         if (!finalValue && inputMeta.required) {
           finalValue = 'REQUIRED'
         }
 
         [(inputName): finalValue]
+
       }
+
     }
 
     List required = inputs.findAll { it.value == 'REQUIRED' }.collect { it.key }
@@ -153,6 +232,12 @@ class DockerAction implements GithubAction, Serializable {
 
   }
 
+  /**
+   * Creates a string of arguments that can be passed to a shell.
+   * @param args that are defined in {@link #metadata metadata.runs.args} but can also be an empty list.
+   * @param inputs the configued inputs from {@link #loadDefaults()}.
+   * @returns the command line arguments.
+   */
   String renderArgs(List args, Map inputs) {
 
     List renderedArgs = args.collect { it -> renderTemplate(it, inputs) }
@@ -163,18 +248,28 @@ class DockerAction implements GithubAction, Serializable {
 
   }
 
+  /**
+   * Tranforms inputs into environment variables using the format Github actions requires.
+   * @param inputs the configued inputs from {@link #loadDefaults()}.
+   * @returns the environment vars in the correct format.
+   */
   String renderEnvVars(Map inputs) {
 
     return inputs.collectEntries { [("INPUT_${normalizeVariable(it.key)}".toString()): it.value] }
 
   }
 
+  /**
+   * Parses the input for Github Actions outputs.
+   * @param input to search for Github Actions outputs.
+   * @returns the outputs found.
+   */
   @NonCPS
-  Map parseOutputs(String output) {
+  Map parseOutputs(String input) {
 
     Map outputs = [:]
 
-    List matches = (output =~ /(?m)^::.*$/).findAll()
+    List matches = (input =~ /(?m)^::.*$/).findAll()
 
     for (match in matches) {
       String outputName = (match =~ /(?m)(?<=name=).*(?=::)/).findAll().first()
@@ -187,26 +282,53 @@ class DockerAction implements GithubAction, Serializable {
 
   }
 
+  /**
+   * Removes the Github Actions outputs so it can be displayed
+   * to the user.
+   * @param input to search for Github Actions outputs.
+   * @returns the input free of any Github Action outputs.
+   */
   @NonCPS
-  String cleanOutput(String output) {
-      return (output =~ /(?m)^::.*$/).replaceAll('')
+  String cleanOutput(String input) {
+
+    return (input =~ /(?m)^::.*$/).replaceAll('')
+
   }
 
+  /**
+   * Makes a string match the format required
+   * by Github Actions for use as an input Map key.
+   * @param value the value to be transformed.
+   * @returns the value that is now all uppercase and spaces turned to _.
+   */
   @NonCPS
-  String normalizeVariable(String inputName) {
+  String normalizeVariable(String value) {
 
-    return inputName.toUpperCase().replace(' ', '_')
+    return value.toUpperCase().replace(' ', '_')
 
   }
 
+  /**
+   * Replaces all Github variables with Groovy GString variables.
+   * @param value that contains Github Variables.
+   * @returns the value but with GString variables.
+   */
   @NonCPS
-  String convertVariable(String arg) {
+  String convertVariable(String value) {
 
     /* groovylint-disable-next-line GStringExpressionWithinString */
-    return (arg =~ /\$\{\{(.*)}}/).replaceAll('\\${$1}')
+    return (value =~ /\$\{\{(.*)}}/).replaceAll('\\${$1}')
 
   }
 
+  /**
+   * Changes dot notation variables to bracket notation.
+   * <p>This change is important because in the Github Actions
+   * metadata file variables often have hypens. Hypens don't seem
+   * to work with dot notation so we reformat them to bracket notation.
+   * @param template that contains GStrings with dot notation.
+   * @returns the template with GString that use bracket notation instead.
+   */
   @NonCPS
   String normalizeTemplate(String template) {
 
@@ -216,6 +338,14 @@ class DockerAction implements GithubAction, Serializable {
 
   }
 
+  /**
+   * Takes a String that contains GString variables
+   * and then renders that String into one where the
+   * variables have been replaced with their values.
+   * @param arg that contains GString Variables.
+   * @param inputs the variables used when rendering the String.
+   * @returns the arg but with GString variables rendered into values.
+   */
   @NonCPS
   String renderTemplate(String arg, Map inputs) {
 

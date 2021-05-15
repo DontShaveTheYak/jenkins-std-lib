@@ -1,10 +1,10 @@
 package org.dsty.github.actions
 
 /**
- * Runs Github Actions.
+ * Represents a Github Action and its abilities.
  */
 interface GithubAction {
 
-  Map with(Map args)
+  Map run()
 
 }
