@@ -43,7 +43,11 @@ class Step implements Serializable {
    * @param options The valid keys and values can be found the <a href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idsteps">here</a>.
    * @return The outputs from the Action.
    */
-  Map call(Map options) {
+  Map call(Map options) throws IllegalArgumentException {
+
+    if (!options.run && !options.uses) {
+      throw new IllegalArgumentException("Unable to run step. Please provide a 'run' or 'uses' value.")
+    }
 
     options.env = options.env ?: [:]
 
@@ -57,6 +61,7 @@ class Step implements Serializable {
 
       this.log.info("Skipping ${options.stepName}.")
       return [:]
+
     }
 
     options.workspace = this.steps.env.WORKSPACE_TMP ?: this.steps.env.WORKSPACE
