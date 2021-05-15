@@ -12,7 +12,7 @@ def client():
 @pytest.fixture(scope='module')
 def container(client: docker.DockerClient):
 
-    image = os.getenv('RUNNER_IMAGE', 'iorunner')
+    image = 'shadycuz/jenkins-std-lib'
 
     jobs_path: str = str(Path(__file__, '../../jobs').resolve())
     lib_path: str = str(Path(__file__, '../../').resolve())

@@ -1,12 +1,12 @@
 appdirs==1.4.4
-attrs==20.3.0
+attrs==21.2.0
 certifi==2020.12.5
 cfgv==3.2.0
 chardet==4.0.0
 distlib==0.3.1
 docker==5.0.0
 filelock==3.0.12
-identify==2.1.2
+identify==2.2.4
 idna==2.10
 iniconfig==1.1.1
 nodeenv==1.6.0
@@ -19,8 +19,8 @@ pytest==6.2.4
 PyYAML==5.4.1
 requests==2.25.1
 semver==2.13.0
-six==1.15.0
+six==1.16.0
 toml==0.10.2
 urllib3==1.26.4
-virtualenv==20.4.2
-websocket-client==0.58.0
+virtualenv==20.4.6
+websocket-client==0.59.0
