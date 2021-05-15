@@ -184,7 +184,7 @@ class DockerAction implements GithubAction, Serializable {
    */
   Map dockerRun(String containerName, String imageID, String envVars, String containerArgs, String entryPoint) {
 
-    Result result = this.bash.silent("docker run --rm --name ${containerName} ${envVars} ${entryPoint} ${imageID} ${containerArgs}")
+    Result result = this.bash.silent("docker run --rm --name ${containerName} --group-add \$(getent group docker | cut -d: -f3) ${envVars} ${entryPoint} ${imageID} ${containerArgs}")
 
     this.log.debug(result.stdOut)
 
