@@ -184,7 +184,14 @@ class DockerAction implements GithubAction, Serializable {
    */
   Map dockerRun(String containerName, String imageID, String envVars, String containerArgs, String entryPoint) {
 
-    Result result = this.bash.silent("docker run --rm --name ${containerName} --group-add \$(getent group docker | cut -d: -f3) ${envVars} ${entryPoint} ${imageID} ${containerArgs}")
+    List needsMounted = [
+      '/var/run/docker.sock:/var/run/docker.sock',
+      "${this.steps.WORKSPACE}:/github/workspace"
+    ]
+
+    String volumeMounts = needsMounted.collect { "-v '${it}'" }.join(' ')
+
+    Result result = this.bash.silent("docker run --rm --name ${containerName} --group-add \$(getent group docker | cut -d: -f3) ${envVars} ${volumeMounts} ${entryPoint} ${imageID} ${containerArgs}")
 
     this.log.debug(result.stdOut)
 
