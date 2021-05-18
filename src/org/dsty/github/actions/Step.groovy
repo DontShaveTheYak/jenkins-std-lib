@@ -59,7 +59,7 @@ class Step implements Serializable {
 
     if (!options.if) {
 
-      this.log.info("Skipping ${options.stepName}.")
+      this.log.info('Skipping step.')
       return [:]
 
     }
