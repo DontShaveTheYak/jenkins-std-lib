@@ -76,7 +76,7 @@ class RunAction extends Action implements GithubAction {
 
       this.steps.println(this.cleanOutput(result.stdOut))
 
-      return this.parseOutputs(result.stdOut)
+      outputs = this.parseOutputs(result.stdOut)
 
     }
 
