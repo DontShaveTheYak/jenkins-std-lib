@@ -10,7 +10,7 @@ node() {
     Step action = new Step(this)
 
     Map options = [
-        'name': 'Get build time.',
+        'name': 'Test Docker Action',
         'uses': 'actions/hello-world-docker-action@master',
         'with': [
             'who-to-greet': 'Mona the Octocat'
@@ -21,6 +21,24 @@ node() {
 
     if (!outputs.time) {
         error('Should have an output named time.')
+    }
+
+    options = [
+        'name': 'Test Run Action.',
+        'run': '''\
+            echo "Setting an output!"
+            echo "::set-output name=test::SomeValue"
+        '''
+    ]
+
+    outputs = action(options)
+
+    if (!outputs.test) {
+        error('Should have an output named test.')
+    }
+
+    if (outputs.test != 'SomeValue') {
+        error('Should set the correct output Value.')
     }
 
     cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
