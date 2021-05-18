@@ -1,30 +1,13 @@
 /* groovylint-disable DuplicateStringLiteral, ThrowException, UnnecessaryCollectCall */
 package org.dsty.github.actions
 
-import org.dsty.bash.BashClient
 import org.dsty.bash.Result
-import org.dsty.logging.LogClient
 import com.cloudbees.groovy.cps.NonCPS
 
 /**
 * Github Action that uses a Dockerfile.
 */
-class DockerAction implements GithubAction, Serializable {
-
-  /**
-   * Workflow script representing the jenkins build.
-   */
-  final private Object steps
-
-  /**
-   * Logging client
-   */
-  final private LogClient log
-
-  /**
-   * Bash Client
-   */
-  final private BashClient bash
+class DockerAction extends Action implements GithubAction {
 
   /**
    * The name of the action.
@@ -48,9 +31,7 @@ class DockerAction implements GithubAction, Serializable {
    * @param steps The workflow script representing the jenkins build.
    */
   DockerAction(Object steps) {
-    this.steps = steps
-    this.log = new LogClient(steps)
-    this.bash = new BashClient(steps)
+    super(steps)
   }
 
   /**
@@ -195,7 +176,7 @@ class DockerAction implements GithubAction, Serializable {
 
     this.log.debug(result.stdOut)
 
-    this.steps.println(cleanOutput(result.stdOut))
+    this.steps.println(this.cleanOutput(result.stdOut))
 
     return this.parseOutputs(result.stdOut)
 
@@ -263,42 +244,6 @@ class DockerAction implements GithubAction, Serializable {
   String renderEnvVars(Map inputs) {
 
     return inputs.collectEntries { [("INPUT_${normalizeVariable(it.key)}".toString()): it.value] }
-
-  }
-
-  /**
-   * Parses the input for Github Actions outputs.
-   * @param input to search for Github Actions outputs.
-   * @returns the outputs found.
-   */
-  @NonCPS
-  Map parseOutputs(String input) {
-
-    Map outputs = [:]
-
-    List matches = (input =~ /(?m)^::.*$/).findAll()
-
-    for (match in matches) {
-      String outputName = (match =~ /(?m)(?<=name=).*(?=::)/).findAll().first()
-      String outputValue = (match =~ /(?m)::.*::(.*$)/).findAll().first()[1]
-
-      outputs[outputName] = outputValue
-    }
-
-    return outputs
-
-  }
-
-  /**
-   * Removes the Github Actions outputs so it can be displayed
-   * to the user.
-   * @param input to search for Github Actions outputs.
-   * @returns the input free of any Github Action outputs.
-   */
-  @NonCPS
-  String cleanOutput(String input) {
-
-    return (input =~ /(?m)^::.*$/).replaceAll('')
 
   }
 
