@@ -45,6 +45,11 @@ class ActionFactory implements Serializable {
       action.options = options
     }
 
+    if (actionType == 'run') {
+      action = new RunAction(this.steps)
+      action.options = options
+    }
+
     if (!action) {
       throw new IllegalStateException('Unable to determine the type of Github action.')
     }
