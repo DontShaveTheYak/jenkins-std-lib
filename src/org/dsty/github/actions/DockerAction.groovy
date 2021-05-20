@@ -120,7 +120,7 @@ class DockerAction extends Action implements GithubAction {
 
     String entryFlag = '--entrypoint'
 
-    String entryPoint
+    String entryPoint = this.metadata.runs.entrypoint ? "${entryFlag} ${this.metadata.runs.entryPoint}" : ''
 
     Map outputs = [:]
 
@@ -131,13 +131,11 @@ class DockerAction extends Action implements GithubAction {
 
         this.log.debug("${this.name} - Running pre-entrypoint.")
 
-        entryPoint = "${entryFlag} ${this.metadata.runs['pre-entrypoint']}"
+        String preArgs = "${this.metadata.runs['pre-entrypoint']} ${containerArgs}"
 
-        outputs << this.dockerRun("${buildSlug}-pre", imageID, envVars, containerArgs, entryPoint)
+        outputs << this.dockerRun("${buildSlug}-pre", imageID, envVars, preArgs, entryPoint)
 
       }
-
-      entryPoint = this.metadata.runs.entrypoint ? "${entryFlag} ${this.metadata.runs.entryPoint}" : ''
 
       this.log.debug("${this.name} - Running main entrypoint.")
 
@@ -147,9 +145,9 @@ class DockerAction extends Action implements GithubAction {
 
         this.log.debug("${this.name} - Running post-entrypoint.")
 
-        entryPoint = "${entryFlag} ${this.metadata.runs['post-entrypoint']}"
+        String postArgs = "${this.metadata.runs['post-entrypoint']} ${containerArgs}"
 
-        outputs << this.dockerRun("${buildSlug}-pre", imageID, envVars, containerArgs, entryPoint)
+        outputs << this.dockerRun("${buildSlug}-pre", imageID, envVars, postArgs, entryPoint)
 
       }
 
@@ -165,7 +163,7 @@ class DockerAction extends Action implements GithubAction {
    * @param imageID the docker image to use.
    * @param envVars the environment vars to pass to docker run.
    * @param containerArgs the argurments to pass to the entrypoint.
-   * @param entryPoint the entrpoint to use or an empty string to use containers entrypoint.
+   * @param entryPoint the entrypoint to use or an empty string to use containers entrypoint.
    * @returns the outputs from the action.
    */
   Map dockerRun(String containerName, String imageID, String envVars, String containerArgs, String entryPoint) {
