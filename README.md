@@ -3,7 +3,7 @@
 [![Lint][lint-badge]][test-url]
 [![Latest][doc-badge]][doc-url]
 
-DontShaveTheYak presents the Jenkins Standard Library. A set of useful tools for everyday CI/CD jobs.
+DontShaveTheYak presents the Jenkins Standard Library. A set of useful tools for every day CI/CD jobs.
 
 Why use our library?
 * [Less Yak Shaving](https://seths.blog/2005/03/dont_shave_that/) for your team.
@@ -27,7 +27,7 @@ For more detailed information see the offical Jenkins [Shared Library](https://w
 
 ### Recommended Setup
 
-Our Shared Library will function and look its best if you setup the additional plugins below.
+Our Shared Library will function and look its best if you setup the additional plugins below. We currently only support Agents that use Linux.
 
 We recommend the following plugins:
 * [simple-theme-plugin](https://plugins.jenkins.io/simple-theme-plugin/) - To remove non-useful information from build console. Use this config:
@@ -41,6 +41,8 @@ We recommend the following plugins:
   }
   ```
 * [AnsiColor](https://plugins.jenkins.io/ansicolor/) - To get color coded log messages from our logging package.
+
+*Note: Individual library functions may have their own requirements. See the [docs][doc-url]*
 
 ### Usage
 
