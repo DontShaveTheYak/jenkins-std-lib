@@ -5,40 +5,75 @@ import org.dsty.github.actions.Step
 
 node() {
 
+    // This is needed if you run jenkins in a docker container.
+    // It's the path on the host machine where your docker bind mount is stored.
+    // docker run -v '/tmp/jenkins_home:/var/run/jenkins_home' jenkins/jenkins:lts
+    env.DIND_JENKINS_HOME = '/tmp/jenkins_home'
+
     String cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
 
     Step action = new Step(this)
 
-    Map options = [
-        'name': 'Test Docker Action',
-        'uses': 'actions/hello-world-docker-action@master',
-        'with': [
-            'who-to-greet': 'Mona the Octocat'
+    Map options
+
+    Map outputs
+
+    stage('Docker Action') {
+
+        options = [
+            'name': 'Test Docker Action',
+            'uses': 'actions/hello-world-docker-action@master',
+            'with': [
+                'who-to-greet': 'DockerAction'
+            ]
         ]
-    ]
 
-    Map outputs = action(options)
+        outputs = action(options)
 
-    if (!outputs.time) {
-        error('Should have an output named time.')
+        if (!outputs.time) {
+            error('Should have an output named time.')
+        }
+
     }
 
-    options = [
-        'name': 'Test Run Action.',
-        'run': '''\
-            echo "Setting an output!"
-            echo "::set-output name=test::SomeValue"
-        '''
-    ]
+    stage('JavaScript Action') {
 
-    outputs = action(options)
+        options = [
+            'name': 'Test JavaScript Action',
+            'uses': 'actions/hello-world-javascript-action@master',
+            'with': [
+                'who-to-greet': 'JavaScriptAction'
+            ]
+        ]
 
-    if (!outputs.test) {
-        error('Should have an output named test.')
+        outputs = action(options)
+
+        if (!outputs.time) {
+            error('Should have an output named time.')
+        }
+
     }
 
-    if (outputs.test != 'SomeValue') {
-        error('Should set the correct output Value.')
+    stage('Run Action') {
+
+        options = [
+            'name': 'Test RunAction.',
+            'run': '''\
+                echo "Setting an output!"
+                echo "::set-output name=test::SomeValue"
+            '''
+        ]
+
+        outputs = action(options)
+
+         if (!outputs.test) {
+            error('Should have an output named test.')
+        }
+
+        if (outputs.test != 'SomeValue') {
+            error('Should set the correct output Value.')
+        }
+
     }
 
     cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)

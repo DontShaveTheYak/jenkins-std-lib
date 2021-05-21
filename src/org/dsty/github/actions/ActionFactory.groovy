@@ -42,17 +42,21 @@ class ActionFactory implements Serializable {
 
     if (actionType == 'docker') {
       action = new DockerAction(this.steps)
-      action.options = options
     }
 
     if (actionType == 'run') {
       action = new RunAction(this.steps)
-      action.options = options
+    }
+
+    if (actionType == 'node12') {
+      action = new JavaScriptAction(this.steps)
     }
 
     if (!action) {
       throw new IllegalStateException('Unable to determine the type of Github action.')
     }
+
+    action.options = options
 
     return action
   }
