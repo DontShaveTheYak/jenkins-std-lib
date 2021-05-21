@@ -5,7 +5,7 @@ import org.dsty.bash.Result
 import com.cloudbees.groovy.cps.NonCPS
 
 /**
-* Github Action that uses a Dockerfile.
+* Github Action that uses a Docker Container.
 */
 class DockerAction extends Action implements GithubAction {
 
