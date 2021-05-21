@@ -26,6 +26,11 @@ class Action implements Serializable {
   protected BashClient bash
 
   /**
+   * The options from the {@link org.dsty.github.actions.Step#call(java.util.Map) Step}.
+   */
+  protected Map options
+
+  /**
    * Default Constructor
    * <p>Using this Class directly in a Jenkins pipeline is an Advanced
    * use case. Most people should just use {@link org.dsty.github.actions.Step#Step Step}.
