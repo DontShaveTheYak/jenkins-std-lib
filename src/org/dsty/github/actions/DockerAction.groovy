@@ -106,11 +106,6 @@ class DockerAction extends Action implements GithubAction {
 
     Map finalEnvVars = renderedEnvVars << this.options.env
 
-    String envVars = finalEnvVars.collect { "-e ${it.key}" }.join(' ')
-
-    /* groovylint-disable-next-line SpaceAfterOpeningBrace, SpaceBeforeClosingBrace */
-    List containerEnv = finalEnvVars.collect {"${it.key}=${it.value }"}
-
     String buildSlug = "${this.steps.env.BUILD_TAG}-${this.name}".replaceAll(' ', '-')
 
     String entryFlag = '--entrypoint'
@@ -119,38 +114,27 @@ class DockerAction extends Action implements GithubAction {
 
     Map outputs = [:]
 
-    this.log.debug("Env Vars:\n${containerEnv}")
+    if (this.metadata.runs['pre-entrypoint']) {
 
-    // pre and post if not currently supported.
-    this.steps.withEnv(containerEnv) {
+      this.log.debug("${this.name} - Running pre-entrypoint.")
 
-      Result result = this.bash.call('printenv')
+      String preArgs = "${this.metadata.runs['pre-entrypoint']} ${containerArgs}"
 
-      this.log.info(result.stdOut)
+      outputs << this.dockerRun("${buildSlug}-pre", imageID, finalEnvVars, preArgs, entryPoint)
 
-      if (this.metadata.runs['pre-entrypoint']) {
+    }
 
-        this.log.debug("${this.name} - Running pre-entrypoint.")
+    this.log.debug("${this.name} - Running main entrypoint.")
 
-        String preArgs = "${this.metadata.runs['pre-entrypoint']} ${containerArgs}"
+    outputs << this.dockerRun(buildSlug, imageID, finalEnvVars, containerArgs, entryPoint)
 
-        outputs << this.dockerRun("${buildSlug}-pre", imageID, envVars, preArgs, entryPoint)
+    if (this.metadata.runs['post-entrypoint']) {
 
-      }
+      this.log.debug("${this.name} - Running post-entrypoint.")
 
-      this.log.debug("${this.name} - Running main entrypoint.")
+      String postArgs = "${this.metadata.runs['post-entrypoint']} ${containerArgs}"
 
-      outputs << this.dockerRun(buildSlug, imageID, envVars, containerArgs, entryPoint)
-
-      if (this.metadata.runs['post-entrypoint']) {
-
-        this.log.debug("${this.name} - Running post-entrypoint.")
-
-        String postArgs = "${this.metadata.runs['post-entrypoint']} ${containerArgs}"
-
-        outputs << this.dockerRun("${buildSlug}-pre", imageID, envVars, postArgs, entryPoint)
-
-      }
+      outputs << this.dockerRun("${buildSlug}-pre", imageID, finalEnvVars, postArgs, entryPoint)
 
     }
 
@@ -167,7 +151,12 @@ class DockerAction extends Action implements GithubAction {
    * @param entryPoint the entrypoint to use or an empty string to use containers entrypoint.
    * @returns the outputs from the action.
    */
-  Map dockerRun(String containerName, String imageID, String envVars, String containerArgs, String entryPoint) {
+  Map dockerRun(String containerName, String imageID, Map finalEnvVars, String containerArgs, String entryPoint) {
+
+    String envVars = finalEnvVars.collect { "-e ${it.key}" }.join(' ')
+
+    /* groovylint-disable-next-line SpaceAfterOpeningBrace, SpaceBeforeClosingBrace */
+    String containerEnv = finalEnvVars.collect {"'${it.key}=${it.value }'"}.join(' ')
 
     this.mounts.addAll(
       [
@@ -178,7 +167,7 @@ class DockerAction extends Action implements GithubAction {
 
     String volumeMounts = this.mounts.collect { "-v '${it}'" }.join(' ')
 
-    Result result = this.bash.silent("docker run --rm --name ${containerName} --group-add \$(getent group docker | cut -d: -f3) ${envVars} ${volumeMounts} ${entryPoint} ${imageID} ${containerArgs}")
+    Result result = this.bash.silent("env ${containerEnv} docker run --rm --name ${containerName} --group-add \$(getent group docker | cut -d: -f3) ${envVars} ${volumeMounts} ${entryPoint} ${imageID} ${containerArgs}")
 
     this.log.debug(result.stdOut)
 
