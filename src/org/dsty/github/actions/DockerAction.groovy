@@ -15,19 +15,14 @@ class DockerAction extends Action implements GithubAction {
   String name
 
   /**
-   * The options from the {@link org.dsty.github.actions.Step#call(java.util.Map) Step}.
-   */
-  Map options
-
-  /**
    * The metadata from action.yml/yaml file.
    */
-  Map metadata
+  protected Map metadata
 
   /**
    * Docker volume mounts for the container with out '-v' appended.
    */
-  private final List<String> mounts = []
+  protected final List<String> mounts = []
 
   /**
    * Default Constructor
@@ -120,12 +115,18 @@ class DockerAction extends Action implements GithubAction {
 
     String entryFlag = '--entrypoint'
 
-    String entryPoint = this.metadata.runs.entrypoint ? "${entryFlag} ${this.metadata.runs.entryPoint}" : ''
+    String entryPoint = this.metadata.runs.entrypoint ? "${entryFlag} ${this.metadata.runs.entrypoint}" : ''
 
     Map outputs = [:]
 
+    this.log.debug("Env Vars:\n${containerEnv}")
+
     // pre and post if not currently supported.
     this.steps.withEnv(containerEnv) {
+
+      Result result = this.bash.call('printenv')
+
+      this.log.info(result.stdOut)
 
       if (this.metadata.runs['pre-entrypoint']) {
 
@@ -289,7 +290,7 @@ class DockerAction extends Action implements GithubAction {
   @NonCPS
   String normalizeTemplate(String template) {
 
-    String templateVar = (template =~ /(?<=\.)[\w\-]*/).findAll().first()
+    String templateVar = (template =~ /(?<=inputs\.)[\w\-]*/).findAll().first()
 
     return (template =~ /\.[\w\-]*/).replaceFirst("['${templateVar}']")
 
@@ -305,6 +306,10 @@ class DockerAction extends Action implements GithubAction {
    */
   @NonCPS
   String renderTemplate(String arg, Map inputs) {
+
+    if (! (arg =~ /\$\{.*}/) ) {
+      return arg
+    }
 
     String template = convertVariable(arg)
     String normalTemplate = normalizeTemplate(template)
