@@ -6,7 +6,7 @@ chardet==4.0.0
 distlib==0.3.1
 docker==5.0.0
 filelock==3.0.12
-identify==2.2.5
+identify==2.2.6
 idna==2.10
 iniconfig==1.1.1
 nodeenv==1.6.0
