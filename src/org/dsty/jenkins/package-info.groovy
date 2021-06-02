@@ -1,4 +1,4 @@
 /**
  * Get information about the Jenkins Instance.
  */
- package org.dsty.jenkins
+package org.dsty.jenkins

@@ -19,137 +19,124 @@ import org.dsty.logging.LogClient
  */
 class Workflow implements Serializable {
 
-  /**
-   * Workflow script representing the jenkins build.
-   */
-  private final Object steps
+    /**
+     * Workflow script representing the jenkins build.
+     */
+    private final Object steps
 
-  /**
-   * Logging client
-   */
-  private final LogClient log
+    /**
+     * Logging client
+     */
+    private final LogClient log
 
-  /**
-   * Bash Client
-   */
-  private final BashClient bash
+    /**
+     * Bash Client
+     */
+    private final BashClient bash
 
-  /**
-   * The version of <strong>act</strong> to install.
-   */
-  String version
+    /**
+     * The version of <strong>act</strong> to install.
+     */
+    String version
 
-  /**
-   * Default Constructor
-   * @param steps The workflow script representing the jenkins build.
-   */
-  Workflow(Object steps) {
-    this.steps = steps
-    this.log = new LogClient(steps)
-    this.bash = new BashClient(steps)
-  }
-
-  /**
-   * Installs and then runs <strong>act</strong>.
-   * <p> The default event is <strong>push</strong> to change it to <strong>pull_request</strong>:</p>
-   * <pre>{@code
-   * import org.dsty.github.actions.Workflow
-   *node() {
-   *  Workflow workflow = new Workflow(this)
-   *  workflow('pull_request')
-   *&#125;}</pre>
-   * @param args The arguments passed directly to <strong>act</strong>. See <strong>act</strong> <a href="https://github.com/nektos/act#commands">docs</a>.
-   * @return The output from the <strong>act</strong> command.
-   */
-  String call(String args = '') throws ScriptError {
-    this.install()
-
-    return this.run(args)
-  }
-
-  /**
-   * Installs <strong>act</strong> by first checking if it is already installed and
-   * if not then installs the latest version. The property {@link #version} can be set to install
-   * a specific version.
-   */
-  void install() throws ScriptError {
-
-    this.log.info('Installing Act.')
-
-    Result result = this.bash.ignoreErrors(/set -o pipefail; act --version | cut -d' ' -f3/, false, true)
-
-    Closure alreadyInstalled = {
-
-      this.version = "v${result.stdOut}"
-
-      this.log.info("Version ${this.version} of act is already installed.")
+    /**
+     * Default Constructor
+     * @param steps The workflow script representing the jenkins build.
+     */
+    Workflow(Object steps) {
+        this.steps = steps
+        this.log = new LogClient(steps)
+        this.bash = new BashClient(steps)
     }
 
-    Closure installLatest = {
+    /**
+     * Installs and then runs <strong>act</strong>.
+     * <p> The default event is <strong>push</strong> to change it to <strong>pull_request</strong>:</p>
+     * <pre>{@code
+     * import org.dsty.github.actions.Workflow
+     *node() {
+     *  Workflow workflow = new Workflow(this)
+     *  workflow('pull_request')
+     *&#125;}</pre>
+     * @param args The arguments passed directly to <strong>act</strong>.
+     * See <strong>act</strong> <a href="https://github.com/nektos/act#commands">docs</a>.
+     * @return The output from the <strong>act</strong> command.
+     */
+    String call(String args = '') throws ScriptError {
+        this.install()
 
-      this.log.info('Downloading the latest version.')
-      this.bash.call('curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash')
-
+        return this.run(args)
     }
 
-    Closure installVersion = {
+    /**
+     * Installs <strong>act</strong> by first checking if it is already installed and
+     * if not then installs the latest version. The property {@link #version} can be set to install
+     * a specific version.
+     */
+    void install() throws ScriptError {
+        this.log.info('Installing Act.')
 
-      this.log.info("Downloading version ${this.version}.")
-      this.bash.call("""\
-        curl https://raw.githubusercontent.com/nektos/act/master/install.sh -o .install_act
-        chmod +x .install_act
-        sudo bash .install_act ${this.version}"""
-      )
+        Result result = this.bash.ignoreErrors(/set -o pipefail; act --version | cut -d' ' -f3/, false, true)
 
-      this.version = null
+        Closure alreadyInstalled = {
+            this.version = "v${result.stdOut}"
 
+            this.log.info("Version ${this.version} of act is already installed.")
+        }
+
+        Closure installLatest = {
+            this.log.info('Downloading the latest version.')
+            this.bash.call('curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash')
+        }
+
+        Closure installVersion = {
+            this.log.info("Downloading version ${this.version}.")
+            this.bash.call("""\
+                curl https://raw.githubusercontent.com/nektos/act/master/install.sh -o .install_act
+                chmod +x .install_act
+                sudo bash .install_act ${this.version}""".stripIndent()
+            )
+
+            this.version = null
+        }
+
+        Closure installCMD = this.version ? installVersion : installLatest
+
+        Closure cmd = result.exitCode == 0 && !this.version ? alreadyInstalled : installCMD
+
+        this.steps.dir(this.steps.env.WORKSPACE) {
+            cmd()
+        }
+
+        if (!this.version) {
+            String version = this.bash.call(/set -o pipefail; act --version | cut -d' ' -f3/).stdOut
+            this.version = "v${version}"
+        }
+
+        String homeDir = this.bash.call('echo ~').stdOut
+
+        if (!this.steps.fileExists("${homeDir}/.actrc")) {
+            // We have to write out a config file to make act work headless
+            this.bash.call('''\
+                cat <<EOT >> ~/.actrc
+                -P ubuntu-latest=catthehacker/ubuntu:act-latest
+                -P ubuntu-20.04=catthehacker/ubuntu:act-20.04
+                -P ubuntu-18.04=catthehacker/ubuntu:act-18.04
+                EOT'''.stripIndent()
+            )
+        }
     }
 
-    Closure installCMD = this.version ? installVersion : installLatest
+    /**
+     * Calls the <strong>act</strong> binary with the supplied arugments.
+     * @param args The arguments passed directly to <strong>act</strong>.
+     * See <strong>act</strong> <a href="https://github.com/nektos/act#commands">docs</a>.
+     * @return The output from the <strong>act</strong> command.
+     */
+    String run(String args) throws ScriptError {
+        Result result = this.bash.call("act ${args}")
 
-    Closure cmd = result.exitCode == 0 && !this.version ? alreadyInstalled : installCMD
-
-    this.steps.dir(this.steps.env.WORKSPACE) {
-
-      cmd()
-
+        return result.output
     }
-
-    if (!this.version) {
-
-      String version = this.bash.call(/set -o pipefail; act --version | cut -d' ' -f3/).stdOut
-      this.version = "v${version}"
-
-    }
-
-    String homeDir = this.bash.call('echo ~').stdOut
-
-    if (!this.steps.fileExists("${homeDir}/.actrc")) {
-
-      // We have to write out a config file to make act work headless
-      this.bash.call('''\
-        cat <<EOT >> ~/.actrc
-        -P ubuntu-latest=catthehacker/ubuntu:act-latest
-        -P ubuntu-20.04=catthehacker/ubuntu:act-20.04
-        -P ubuntu-18.04=catthehacker/ubuntu:act-18.04
-        EOT'''.stripIndent()
-      )
-
-    }
-
-  }
-
-  /**
-   * Calls the <strong>act</strong> binary with the supplied arugments.
-   * @param args The arguments passed directly to <strong>act</strong>. See <strong>act</strong> <a href="https://github.com/nektos/act#commands">docs</a>.
-   * @return The output from the <strong>act</strong> command.
-   */
-  String run(String args) throws ScriptError {
-
-    Result result = this.bash.call("act ${args}")
-
-    return result.output
-
-  }
 
 }
