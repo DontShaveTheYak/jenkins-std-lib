@@ -1,4 +1,4 @@
 /**
  * Run Github Actions on Jenkins.
  */
- package org.dsty.github.actions
+package org.dsty.github.actions
