@@ -1,9 +1,9 @@
+/* groovylint-disable DuplicateMapLiteral, DuplicateStringLiteral, UnusedVariable */
 @Library('pipeline-library')
 
 import org.dsty.logging.LogClient
 
 node() {
-
     String cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
 
     LogClient log = new LogClient(this)
@@ -56,5 +56,4 @@ node() {
     log.error(level)
 
     cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
-
 }
