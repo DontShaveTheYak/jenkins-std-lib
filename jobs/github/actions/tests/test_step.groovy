@@ -1,10 +1,9 @@
-/* groovylint-disable DuplicateMapLiteral, DuplicateStringLiteral, Println, UnnecessaryParenthesesForMethodCallWithClosure, UnusedVariable */
+/* groovylint-disable, DuplicateMapLiteral, DuplicateStringLiteral, UnusedVariable */
 @Library('pipeline-library')
 
 import org.dsty.github.actions.Step
 
 node() {
-
     String cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
 
     Step action = new Step(this)
@@ -14,10 +13,10 @@ node() {
     ]
 
     try {
-      Map outputs = action(options)
-      error("Should not run if 'uses' or 'run' not provided.")
+        Map outputs = action(options)
+        error("Should not run if 'uses' or 'run' not provided.")
     } catch (IllegalArgumentException ex) {
-      println('Threw the correct exception.')
+        println('Threw the correct exception.')
     }
 
     options = [
@@ -32,7 +31,7 @@ node() {
     Map outputs = action(options)
 
     if (outputs) {
-      error('Should haved skipped running the step.')
+        error('Should haved skipped running the step.')
     }
 
     cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)

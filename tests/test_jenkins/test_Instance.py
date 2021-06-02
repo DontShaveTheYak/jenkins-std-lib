@@ -1,3 +1,3 @@
 def test_plugins(container):
 
-    container('jenkins/plugins')
+    container('jenkins/instance_example.groovy')

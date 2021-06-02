@@ -1,22 +1,15 @@
-def test_call(container):
+def test_bash_example(container):
 
-    job_output = container('bash/call')
+    job_output = container('bash/bash_example.groovy')
 
-    assert b"TestMessage" in job_output
-    assert b"fakecommand: command not found" in job_output
+    # Test regular bash
+    assert b"Hello from Bash!" in job_output
+    assert b"RegularFakeCommand: command not found" in job_output
 
-def test_silent(container):
+    # Test silent bash
+    assert b"NotShown!" not in job_output
 
-    job_output = container('bash/silent')
-
-    assert b"TestMessage" not in job_output
-    assert b"fakecommand: command not found" not in job_output
-
-
-def test_ignore_errors(container):
-
-    job_output = container('bash/ignore_errors')
-
+    # Test ignoreErrors bash
     assert b"fakecommand: command not found" in job_output
     assert b"secretcommand" not in job_output
     assert b"anothercommand" not in job_output
