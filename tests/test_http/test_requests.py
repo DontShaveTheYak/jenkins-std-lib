@@ -1,3 +1,3 @@
 def test_requests(container):
 
-    container('http/requests')
+    container('http/requests_example.groovy')

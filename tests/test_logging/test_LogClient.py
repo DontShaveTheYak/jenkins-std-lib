@@ -1,6 +1,6 @@
 def test_levels(container):
 
-    job_output = container('logging/levels')
+    job_output = container('logging/logging_example.groovy')
 
     assert b"[Debug] default" not in job_output
     assert b"[Info] default" in job_output
