@@ -7,41 +7,41 @@ import com.cloudbees.groovy.cps.NonCPS
  */
 class Result implements Serializable {
 
-  /**
-   * The contents of stdOut from the bash script.
-   */
-  String stdOut
+    /**
+     * The contents of stdOut from the bash script.
+     */
+    String stdOut
 
-  /**
-   * The contents of stdErr from the bash script.
-   */
-  String stdErr
+    /**
+     * The contents of stdErr from the bash script.
+     */
+    String stdErr
 
-  /**
-   * The combined contents of stdOut and stdErr from the bash script.
-   */
-  String output
+    /**
+     * The combined contents of stdOut and stdErr from the bash script.
+     */
+    String output
 
-  /**
-   * The exitCode from the bash script.
-   */
-  Integer exitCode
+    /**
+     * The exitCode from the bash script.
+     */
+    Integer exitCode
 
-  Result(String stdOut, String stdErr, String output, Integer exitCode) {
-    this.stdOut = stdOut
-    this.stdErr = stdErr
-    this.output = output
-    this.exitCode = exitCode
-  }
+    Result(String stdOut, String stdErr, String output, Integer exitCode) {
+        this.stdOut = stdOut
+        this.stdErr = stdErr
+        this.output = output
+        this.exitCode = exitCode
+    }
 
-  /**
-   * Print the output of the bash script when the class is printed.
-   * @return The output from the bash script.
-   */
-  @Override
-  @NonCPS
-  String toString() {
-      return this.output
-  }
+    /**
+     * Print the output of the bash script when the class is printed.
+     * @return The output from the bash script.
+     */
+    @Override
+    @NonCPS
+    String toString() {
+        return this.output
+    }
 
 }

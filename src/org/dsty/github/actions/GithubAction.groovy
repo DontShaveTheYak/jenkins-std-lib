@@ -5,6 +5,6 @@ package org.dsty.github.actions
  */
 interface GithubAction {
 
-  Map run()
+    Map run()
 
 }
