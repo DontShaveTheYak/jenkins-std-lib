@@ -18,131 +18,131 @@ import com.cloudbees.groovy.cps.NonCPS
  */
 class LogClient implements Serializable {
 
-  /**
-   * Workflow script representing the jenkins build.
-   */
-  private final Object steps
+    /**
+     * Workflow script representing the jenkins build.
+     */
+    private final Object steps
 
-  /**
-   * If we should print in color.
-   */
-  Boolean printColor
+    /**
+     * If we should print in color.
+     */
+    Boolean printColor
 
-  /**
-   * Default Constructor
-   * <p>
-   * Example:
-   * <pre>{@code
-   * import org.dsty.logging.LogClient
-   *LogClient log = new LogClient(this)
-   * }</pre>
-   * @param steps The workflow script representing the jenkins build.
-   */
-  LogClient(Object steps) {
-    this.steps = steps
-    useColor()
-  }
-
-  /**
-  * Logs a message to the console in <font color="green">green</font>.
-  * @param input The item you want to output to console.
-  */
-  void debug(Object input) {
-    if (levelCheck(['DEBUG'])) {
-      writeMsg("[Debug] ${getString(input)}", '32')
+    /**
+     * Default Constructor
+     * <p>
+     * Example:
+     * <pre>{@code
+     * import org.dsty.logging.LogClient
+     *LogClient log = new LogClient(this)
+     * }</pre>
+     * @param steps The workflow script representing the jenkins build.
+     */
+    LogClient(Object steps) {
+        this.steps = steps
+        useColor()
     }
-  }
 
-  /**
-  * Logs a message to the console in <font color="blue">blue</font>.
-  * @param input The item you want to output to console.
-  */
-  void info(Object input) {
-    if (levelCheck(['DEBUG', 'INFO'])) {
-      writeMsg("[Info] ${getString(input)}", '34')
+    /**
+     * Logs a message to the console in <font color="green">green</font>.
+     * @param input The item you want to output to console.
+     */
+    void debug(Object input) {
+        if (levelCheck(['DEBUG'])) {
+            writeMsg("[Debug] ${getString(input)}", '32')
+        }
     }
-  }
 
-  /**
-  * Logs a message to the console in <font color="#C4A000">yellow</font>.
-  * @param input The item you want to output to console.
-  */
-  void warn(Object input) {
-    if (levelCheck(['DEBUG', 'INFO', 'WARN'])) {
-      writeMsg("[Warning] ${getString(input)}", '33')
+    /**
+     * Logs a message to the console in <font color="blue">blue</font>.
+     * @param input The item you want to output to console.
+     */
+    void info(Object input) {
+        if (levelCheck(['DEBUG', 'INFO'])) {
+            writeMsg("[Info] ${getString(input)}", '34')
+        }
     }
-  }
 
-  /**
-  * Logs a message to the console in <font color="red">red</font>.
-  * @param input The item you want to output to console.
-  */
-  void error(Object input) {
-    if (levelCheck(['DEBUG', 'INFO', 'WARN', 'ERROR'])) {
-      writeMsg("[Error] ${getString(input)}", '31')
+    /**
+     * Logs a message to the console in <font color="#C4A000">yellow</font>.
+     * @param input The item you want to output to console.
+     */
+    void warn(Object input) {
+        if (levelCheck(['DEBUG', 'INFO', 'WARN'])) {
+            writeMsg("[Warning] ${getString(input)}", '33')
+        }
     }
-  }
 
-  /**
-  * Returns a Map or List as a pretty JSON String.
-  * <p>
-  * Example:
-  * <pre>{@code
-  * Map test = [:]
-  *test['List'] = [1,2,3,4]
-  *log.debug(log.pprint(test))
-  * }</pre>
-  * Results:<font color="green">
-  * <pre>{@code
-  * [Debug] {
-  * "List": [
-  *     1,
-  *     2,
-  *     3,
-  *     4
-  *  ]
-  *}
-  * }</pre></font>
-  * @param item The List or Map you want to format as pretty JSON.
-  * @return A JSON String that is pretty.
-  */
-  String pprint(Object item) {
-    return prettyPrint(toJson(item))
-  }
-
-  String writeMsg(Object input, String colorCode) {
-    if (this.printColor) {
-      this.steps.ansiColor('xterm') {
-        this.steps.println("\u001B[${colorCode}m${input}\u001B[0m")
-      }
-    } else {
-      this.steps.println(input)
+    /**
+     * Logs a message to the console in <font color="red">red</font>.
+     * @param input The item you want to output to console.
+     */
+    void error(Object input) {
+        if (levelCheck(['DEBUG', 'INFO', 'WARN', 'ERROR'])) {
+            writeMsg("[Error] ${getString(input)}", '31')
+        }
     }
-  }
 
-  /**
-  * Check if the current level should be logged.
-  * @param levels The levels that you want to log to.
-  * @return <code>true</code> If the current level is in
-  *         levels param and <code>false</code> if not.
-  */
-  private Boolean levelCheck(List levels) {
-    String level = this.steps.env.PIPELINE_LOG_LEVEL ?: 'INFO'
-    return levels.contains(level)
-  }
+    /**
+     * Returns a Map or List as a pretty JSON String.
+     * <p>
+     * Example:
+     * <pre>{@code
+     * Map test = [:]
+     *test['List'] = [1,2,3,4]
+     *log.debug(log.pprint(test))
+     * }</pre>
+     * Results:<font color="green">
+     * <pre>{@code
+     * [Debug] {
+     * "List": [
+     *     1,
+     *     2,
+     *     3,
+     *     4
+     *  ]
+     *}
+     * }</pre></font>
+     * @param item The List or Map you want to format as pretty JSON.
+     * @return A JSON String that is pretty.
+     */
+    String pprint(Object item) {
+        return prettyPrint(toJson(item))
+    }
 
-  /**
-  * Returns a string of the input object
-  * @param input Any object.
-  * @return The string version of the object.
-  */
-  private String getString(Object input) {
-    return input.toString()
-  }
+    String writeMsg(Object input, String colorCode) {
+        if (this.printColor) {
+            this.steps.ansiColor('xterm') {
+                this.steps.println("\u001B[${colorCode}m${input}\u001B[0m")
+            }
+        } else {
+            this.steps.println(input)
+        }
+    }
 
-  @NonCPS
-  private void useColor() {
-    this.printColor = pluginInstalled('ansicolor')
-  }
+    /**
+     * Check if the current level should be logged.
+     * @param levels The levels that you want to log to.
+     * @return <code>true</code> If the current level is in
+     * levels param and <code>false</code> if not.
+     */
+    private Boolean levelCheck(List levels) {
+        String level = this.steps.env.PIPELINE_LOG_LEVEL ?: 'INFO'
+        return levels.contains(level)
+    }
+
+    /**
+     * Returns a string of the input object
+     * @param input Any object.
+     * @return The string version of the object.
+     */
+    private String getString(Object input) {
+        return input.toString()
+    }
+
+    @NonCPS
+    private void useColor() {
+        this.printColor = pluginInstalled('ansicolor')
+    }
 
 }
