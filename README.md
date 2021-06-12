@@ -53,6 +53,12 @@ Once you have installed our shared library you just need to reference it at the 
 
 For full javadoc documentation see [here][doc-url]. To see example Jenkinsfile's check out the [job](./jobs) directory.
 
+## License
+This project is
+
+License [attribution](https://app.fossa.com/reports/86d307a0-2efa-4fd9-b983-3fd9382433e0) for depenencies.
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B25932%2Fgithub.com%2FDontShaveTheYak%2Fjenkins-std-lib.svg?type=large)](https://app.fossa.com/projects/custom%2B25932%2Fgithub.com%2FDontShaveTheYak%2Fjenkins-std-lib?ref=badge_large)
+
 [test-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests/master?label=Tests
 [lint-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests/master?label=Lint
 [test-url]: https://github.com/DontShaveTheYak/jenkins-std-lib/actions/workflows/test.yml
