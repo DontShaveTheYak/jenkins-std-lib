@@ -123,7 +123,7 @@ repositories {
 dependencies {
     // Use the latest Groovy version for building this library
     compileOnly('org.codehaus.groovy:groovy-all:3.0.8')
-    compileOnly('org.jenkins-ci.main:jenkins-core:2.292')
+    compileOnly('org.jenkins-ci.main:jenkins-core:2.298')
     compileOnly('com.cloudbees:groovy-cps:1.32')
 }
 
