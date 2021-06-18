@@ -78,3 +78,12 @@ We then use pytest to call a docker image that will run the jenkins job and retu
     pytest -s
     ```
 7. Once all tests are passing commit your changes and open a PR.
+
+### Custom Test runner
+We use [jenkinsfile-runner](https://github.com/jenkinsci/jenkinsfile-runner) to run our jobs that we use to test this library. The default image is pulled from [dockerhub](https://hub.docker.com/r/shadycuz/jenkins-std-lib) but you can also build it locally. You also might be forced to build it locally if your contribution needs something modified on the Jenkins to run. Such as a plugin or maybe a environment variable.
+
+#### Building
+From the root of the repo you can run `docker build -t local-runner docker/` but it does take a few miniutes.
+
+### Using
+To force the use of the local image you can run `CUSTOM_RUNNER=local-runner pytest`.
