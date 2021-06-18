@@ -1,5 +1,5 @@
 /* groovylint-disable DuplicateNumberLiteral, DuplicateStringLiteral */
-@Library('pipeline-library')
+@Library('jenkins-std-lib')
 import org.dsty.bash.BashClient
 import org.dsty.bash.ScriptError
 import org.dsty.bash.Result
