@@ -9,7 +9,7 @@ Why use our library?
 * [Less Yak Shaving](https://seths.blog/2005/03/dont_shave_that/) for your team.
 * We fully [test][test-url] and [lint][test-url] this codebase.
 * Our [Releases][releases-url] and [Docs][doc-url] are automated.
-* OpenSource and Free to use.
+* OpenSource and [Free to use](https://choosealicense.com/licenses/gpl-3.0/).
 
 [![Jenkins](https://cdn.freebiesupply.com/logos/large/2x/jenkins-logo-png-transparent.png)](https://www.jenkins.io/)
 
@@ -52,6 +52,13 @@ Once you have installed our shared library you just need to reference it at the 
 ```
 
 For full javadoc documentation see [here][doc-url]. To see example Jenkinsfile's check out the [job](./jobs) directory.
+
+## License
+This project is licensed as `GNU General Public License v3.0` see [LICENSE.md](LICENSE.md).
+
+License [attribution](https://app.fossa.com/reports/86d307a0-2efa-4fd9-b983-3fd9382433e0) for depenencies.
+
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B25932%2Fgithub.com%2FDontShaveTheYak%2Fjenkins-std-lib.svg?type=large)](https://app.fossa.com/projects/custom%2B25932%2Fgithub.com%2FDontShaveTheYak%2Fjenkins-std-lib?ref=badge_large)
 
 [test-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests/master?label=Tests
 [lint-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests/master?label=Lint

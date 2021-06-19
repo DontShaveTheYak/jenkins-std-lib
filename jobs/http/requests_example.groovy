@@ -1,5 +1,5 @@
 /* groovylint-disable DuplicateMapLiteral, DuplicateStringLiteral, UnnecessaryGetter, UnusedVariable */
-@Library('pipeline-library')
+@Library('jenkins-std-lib')
 
 import org.dsty.http.Requests
 import org.dsty.http.Response

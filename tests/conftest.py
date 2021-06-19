@@ -1,19 +1,30 @@
 import os
 from pathlib import Path
-from typing import ByteString
+from typing import Callable, Generator
 import shutil
 
 import docker
 import pytest
+
+Container = Callable[[str], str]
 
 @pytest.fixture(scope='session')
 def client():
     return docker.from_env()
 
 @pytest.fixture(scope='session')
-def container(client: docker.DockerClient):
+def container(client: docker.DockerClient)-> Generator[Container, None, None]:
+    """Creates a jenkinsfile runner container and then Yields a function that
+    can run jenkins jobs on the already started container.
 
-    image = 'shadycuz/jenkins-std-lib'
+    Args:
+        client (docker.DockerClient): The docker client to manage containers.
+
+    Yields:
+        Generator[Callable[[str], str], None, None]: A function that will run Jenkins jobs.
+    """
+
+    image = os.getenv('CUSTOM_RUNNER', 'shadycuz/jenkins-std-lib')
 
     jobs_path: str = str(Path(__file__, '../../jobs').resolve())
     lib_path: str = str(Path(__file__, '../../').resolve())
@@ -39,16 +50,28 @@ def container(client: docker.DockerClient):
 
     container = client.containers.run(image,tty=True, entrypoint='bash',detach=True, volumes=volumes)
 
-    def run_test(job_name):
+    def run_test(job_path: str)-> str:
+        """Runs the specified job using the jenkins runner.
 
+        Args:
+            job_path (str): The path to the job from inside the `jobs` directory.
+
+        Raises:
+            Exception: If the job fails.
+
+        Returns:
+            str: The job output.
+        """
         exitcode: int
-        output: ByteString
+        raw_output: bytes
 
-        exitcode, output = container.exec_run(f"/app/bin/jenkinsfile-runner -w /app/jenkins -p /usr/share/jenkins/ref/plugins --runWorkspace /var/jenkins_home/workspace/job -f /workspace/{job_name}")
+        exitcode, raw_output = container.exec_run(f"/app/bin/jenkinsfile-runner -w /app/jenkins -p /usr/share/jenkins/ref/plugins --runWorkspace /var/jenkins_home/workspace/job -f /workspace/{job_path}")
+
+        output = raw_output.decode('utf-8')
 
         if exitcode:
-            print(output.decode('utf-8'))
-            raise Exception(f"Container failed to run {job_name}.")
+            print(output)
+            raise Exception(f"Container failed to run {job_path}.")
 
         return output
 

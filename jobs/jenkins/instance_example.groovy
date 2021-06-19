@@ -1,5 +1,5 @@
 /* groovylint-disable DuplicateMapLiteral, DuplicateStringLiteral, UnusedVariable */
-@Library('pipeline-library')
+@Library('jenkins-std-lib')
 
 import org.dsty.jenkins.Instance
 
