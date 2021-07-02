@@ -42,6 +42,8 @@ We recommend the following plugins:
   ```
 * [AnsiColor](https://plugins.jenkins.io/ansicolor/) - To get color coded log messages from our logging package.
 
+The required plugins and versions to enable complete library functionality can be found in [lib-plugins.txt](./docker/lib-plugins.txt).
+
 *Note: Individual library functions may have their own requirements. See the [docs][doc-url]*
 
 ### Usage
