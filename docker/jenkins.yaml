@@ -5,20 +5,6 @@ jenkins:
   scmCheckoutRetryCount: 0
   myViewsTabBar: "standard"
   viewsTabBar: "standard"
-  globalNodeProperties:
-    - envVars:
-        env:
-          - key: JFR_LOCAL_WORKSPACE
-            value: /workspace
-          - key: PIPELINE_LIBRARY_SKIP_WINDOWS
-            value: true
-          - key: PIPELINE_LIBRARY_USE_DEFAULT_MAVEN_REPO
-            value: true
-tool:
-  git:
-    installations:
-    - home: "git"
-      name: "Default"
 # Works around https://github.com/jenkinsci/jenkinsfile-runner/issues/359
 groovy:
   - file: "/usr/share/jenkins/ref/init.groovy.d/System.groovy"
