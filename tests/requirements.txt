@@ -1,5 +1,5 @@
 docker==5.0.0
-pre-commit==2.13.0
+pre-commit==2.14.0
 pytest==6.2.4
 requests==2.26.0
 semver==2.13.0
