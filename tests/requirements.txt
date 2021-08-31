@@ -1,4 +1,4 @@
-docker==5.0.0
+docker==5.0.1
 pre-commit==2.13.0
 pytest==6.2.4
 requests==2.26.0
