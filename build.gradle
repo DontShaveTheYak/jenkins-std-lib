@@ -131,3 +131,11 @@ wrapper {
     gradleVersion = '6.5'
     distributionType = Wrapper.DistributionType.ALL
 }
+
+task downloadJars(type: Copy) {
+
+    into "${buildDir}/dependencies"
+
+    from configurations.compileOnly
+
+}
