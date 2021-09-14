@@ -33,7 +33,7 @@ java {
 
 groovydoc {
     use = true
-    source = sourceSets.main.groovy
+    overviewText = resources.text.fromString('Bringing the Zen of Python to Jenkins.')
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc ) {
@@ -130,4 +130,12 @@ dependencies {
 wrapper {
     gradleVersion = '6.5'
     distributionType = Wrapper.DistributionType.ALL
+}
+
+task downloadJars(type: Copy) {
+
+    into "${buildDir}/dependencies"
+
+    from configurations.compileOnly
+
 }
