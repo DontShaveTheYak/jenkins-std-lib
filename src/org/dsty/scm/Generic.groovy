@@ -3,7 +3,7 @@ package org.dsty.scm
 import org.dsty.logging.LogClient
 
 /**
- * Generic SCM client capable of checkingout code.
+ * Generic SCM client capable of checking out code.
  */
 class Generic implements Serializable {
 

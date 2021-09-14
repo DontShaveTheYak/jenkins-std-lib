@@ -105,8 +105,11 @@ class Git extends Generic implements Serializable {
     }
 
     /**
-     * Execute a git command.
-     * @param args The options to pass to git.
+     * Get a list of changed files.
+     * @param options A map of options or named parameters
+     * @param options.target The revision to compare to.
+     * @param options.source The source revision, defaults to HEAD.
+     * @param options.filter Optional values passed directly to git cli {@code --diff-filter} flag.
      * @return The result of the command.
      */
     List<String> changedFiles(Map<String,String> options) {
