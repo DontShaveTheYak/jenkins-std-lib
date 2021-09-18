@@ -112,9 +112,11 @@ sourceSets {
 }
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
+    // Gradle emits a warning because jcenter() method is going to be
+    // removed in Grafle 8.0 but google() or mavenCentral() can not find
+    // org.connectbot.jbcrypt:jbcrypt:1.0.0.
     jcenter()
+    mavenCentral()
     maven {
         url 'https://repo.jenkins-ci.org/releases/'
     }
