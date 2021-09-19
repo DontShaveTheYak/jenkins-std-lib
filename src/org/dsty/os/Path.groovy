@@ -252,7 +252,7 @@ class Path implements Serializable {
     @Override
     @NonCPS
     boolean equals(Object otherPath) {
-        return otherPath == this.fp
+        return otherPath.toString() == this.toString()
     }
 
     /**
@@ -559,7 +559,7 @@ class Path implements Serializable {
     @Override
     @NonCPS
     String toString() {
-        return fp
+        return fp.getRemote()
     }
 
     /**
