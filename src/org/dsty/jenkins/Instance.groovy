@@ -16,6 +16,7 @@ class Instance implements Serializable {
      * @param shortName The name/ID of the plugin.
      * @return True if the plugin is installed.
      */
+    @NonCPS
     static Boolean pluginInstalled(String shortName) {
         List plugins = plugins()
 
