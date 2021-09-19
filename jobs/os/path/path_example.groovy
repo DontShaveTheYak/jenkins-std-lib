@@ -4,7 +4,8 @@ import org.dsty.os.Path
 
 node() {
 
-    Path workspace = new Path(env.WORKSPACE)
+    // Get a path to the current workspace.
+    Path workspace = Path.workspace()
 
     println("Workspace Path is ${workspace}")
 
@@ -51,6 +52,19 @@ node() {
         // Lets verify all of our directories were deleted
         if (dirA.exists() || dirB.exists() || dirB2.exists()) {
             error('Should have deleted all directories.')
+        }
+
+        String someDir = "${workspace}/someDir"
+
+        dir(someDir) {
+
+            // Get a Path to the current working directory
+            Path cwd = Path.cwd()
+
+            // Verify cwd is the directory we are in.
+            if (cwd != someDir) {
+                error("Should be in ${someDir} but acutally in ${cwd}")
+            }
         }
 
     }
