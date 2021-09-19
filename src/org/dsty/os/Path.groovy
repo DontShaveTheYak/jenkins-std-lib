@@ -6,21 +6,31 @@ import java.util.Date
 import hudson.util.io.ArchiverFactory
 import com.cloudbees.groovy.cps.NonCPS
 
+import org.dsty.jenkins.Build
+
 /**
- * A wrapper around hudson.FilePath that allows easy file operations
- * with out resorting to shell.
+ * A wrapper around {@link hudson.FilePath} that allows easy file operations
+ * with out resorting to a shell like <code>sh()</code> or <code>bat()</code>.
+ * <p>
+ * A nice starting point is to get the {@link Path} to your jobs workspace using
+ * <a href="Path.html#workspace()">Path.workspace()</a>. You can also get
+ * the {@link Path} to the current users home directory using
+ * <a href="Path.html#userHome()">Path.userHome()</a> or
+ * <a href="Path.html#jenkinsHome()">Path.jenkinsHome()</a>. You can obtain a
+ * {@link Path} to the current working directory with
+ * <a href="Path.html#cwd()">Path.cwd()</a>.
  */
 class Path implements Serializable {
 
     /**
-     * Jenkins FilePath object
+     * Internal {@link FilePath} object.
      */
     private final FilePath fp
 
     /**
      * Creates a Path from a String reprensentation.
      *
-     * @param path A path on the system. The path doesn't have to exist yet.
+     * @param path An absolute path on the system. The path doesn't have to exist yet.
      */
     Path(String path) {
         this.fp = new FilePath(null, path)
@@ -619,6 +629,61 @@ class Path implements Serializable {
      */
     void write(String content, String encoding = null) {
         fp.write(content, encoding)
+    }
+
+    /**
+     * Get the path to the current builds workspace.
+     *
+     * @return A {@link Path} to the current builds workspace.
+     */
+    static Path workspace() {
+
+        final Build build = new Build()
+        Map<String, String> envVars = build.environmentVars()
+
+        return new Path(envVars.WORKSPACE)
+    }
+
+    /**
+     * Get the path to the current working directory. This is the same
+     * as the <code>pwd()</code> step.
+     * <p>
+     * This method is useful for when you might be inside of
+     * a <code>dir('someDir') {}</code> block and need to get
+     * the path to it.
+     *
+     * @return A {@link Path} to the current working directory.
+     */
+    static Path cwd() {
+        final Build build = new Build()
+        FilePath cwd = build.getCurrentContext(FilePath.class)
+
+        return new Path(cwd)
+    }
+
+    /**
+     * Get the path to the current users home. This is the same
+     * as <code>~<code> on unix systems.
+     *
+     * @return A {@link Path} to the current users home.
+     */
+    static Path userHome() {
+        final Build build = new Build()
+        Map<String, String> envVars = build.environmentVars()
+
+        return new Path(envVars.HOME)
+    }
+
+    /**
+     * Get the path to the Jenkins home directory.
+     *
+     * @return A {@link Path} to the Jenkins home directory.
+     */
+    static Path jenkinsHome() {
+        final Build build = new Build()
+        Map<String, String> envVars = build.environmentVars()
+
+        return new Path(envVars.JENKINS_HOME)
     }
 
 }
