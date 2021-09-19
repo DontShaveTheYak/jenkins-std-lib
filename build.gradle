@@ -34,6 +34,8 @@ java {
 groovydoc {
     use = true
     overviewText = resources.text.fromString('Bringing the Zen of Python to Jenkins.')
+    link('https://docs.oracle.com/javase/8/docs/api/', 'java.')
+    link('https://javadoc.jenkins.io', 'hudson.,jenkins.')
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc ) {
