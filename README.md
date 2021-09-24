@@ -3,13 +3,14 @@
 [![Lint][lint-badge]][test-url]
 [![Latest][doc-badge]][doc-url]
 
-DontShaveTheYak presents the Jenkins Standard Library. A set of useful tools for every day CI/CD jobs.
+[DontShaveTheYak](https://github.com/DontShaveTheYak) presents the Jenkins Standard Library. A set of useful tools for every day CI/CD jobs.
 
 Why use our library?
-* [Less Yak Shaving](https://seths.blog/2005/03/dont_shave_that/) for your team.
+* Portable! This library requires very few [plugins](./docker/lib-plugins.txt).
+* OpenSource and [Free to use](https://choosealicense.com/licenses/gpl-3.0/)
 * We fully [test][test-url] and [lint][test-url] this codebase.
 * Our [Releases][releases-url] and [Docs][doc-url] are automated.
-* OpenSource and [Free to use](https://choosealicense.com/licenses/gpl-3.0/).
+* [Less Yak Shaving](https://seths.blog/2005/03/dont_shave_that/) for your team.
 
 [![Jenkins](https://cdn.freebiesupply.com/logos/large/2x/jenkins-logo-png-transparent.png)](https://www.jenkins.io/)
 
@@ -55,6 +56,17 @@ Once you have installed our shared library you just need to reference it at the 
 
 For full javadoc documentation see [here][doc-url]. To see example Jenkinsfile's check out the [job](./jobs) directory.
 
+## Support DTSY
+
+I'm just a DevOps engineer trying to make the kind of tools I would like to see at work.
+
+You can support my efforts in any of the following ways:
+* Star this repo! :star_struck:
+* Follow me on [Twitter](https://twitter.com/DontShaveTheYak).
+* Spread the word :grin:
+* Contribute to this repo! (Guide coming soon...ish)
+* Sponsor me on [GitHub](https://github.com/sponsors/shadycuz) :heart_eyes:
+* Support me on [Patreon](https://www.patreon.com/DontShaveTheYak) :smiling_face_with_three_hearts:
 ## License
 This project is licensed as `GNU General Public License v3.0` see [LICENSE.md](LICENSE.md).
 
