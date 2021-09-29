@@ -1,5 +1,5 @@
 /* groovylint-disable CatchException, DuplicateStringLiteral, FactoryMethodName, UnnecessaryGetter, MethodCount */
-package org.dsty.os
+package org.dsty.system.os
 
 import hudson.FilePath
 import java.util.Date
@@ -19,10 +19,7 @@ import org.dsty.jenkins.Build
  * <a href="Path.html#jenkinsHome()">Path.jenkinsHome()</a>. You can obtain a
  * {@link Path} to the current working directory with
  * <a href="Path.html#cwd()">Path.cwd()</a>.
- *
- * @deprecated As of release 0.10.0, replaced by {@link org.dsty.system.Path org.dsty.system.Path}
  */
-@Deprecated
 class Path implements Serializable {
 
     /**

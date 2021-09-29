@@ -1,6 +1,6 @@
 @Library('jenkins-std-lib')
 
-import org.dsty.os.Path
+import org.dsty.system.os.Path
 
 node() {
 
