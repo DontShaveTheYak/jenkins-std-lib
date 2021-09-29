@@ -1,13 +1,13 @@
 /* groovylint-disable DuplicateNumberLiteral, DuplicateStringLiteral */
 @Library('jenkins-std-lib')
-import org.dsty.bash.BashClient
-import org.dsty.bash.ScriptError
-import org.dsty.bash.Result
+import org.dsty.system.os.shell.Bash
+import org.dsty.system.os.shell.ExecutionException
+import org.dsty.system.os.shell.Result
 
 node() {
     String msg
     Result result
-    BashClient bash = new BashClient(this)
+    Bash bash = new Bash()
 
     stage('Regular Bash') {
         msg = 'Hello from Bash!'
@@ -33,11 +33,11 @@ node() {
         // In the event of a non 0 exitCode an Exception
         // is thrown. The exception will behave just like a normal Result.
         // So it will also have stdOut, stdError, output and exitCode.
-        ScriptError exception = null
+        ExecutionException exception = null
 
         try {
             bash('RegularFakeCommand')
-        } catch (ScriptError e) {
+        } catch (ExecutionException e) {
             exception = e
         }
 
@@ -76,7 +76,7 @@ node() {
         // ignoreErrors will not throw an exception.
         // Instead is just returns the results after
         // it encounters an error.
-        result = bash.ignoreErrors('fakecommand', true)
+        result = bash.ignoreErrors('fakecommand')
 
         if ( !result.stdErr.contains('fakecommand: command not found') ) {
             error('Command was found.')
@@ -90,31 +90,36 @@ node() {
             error('Exited with wrong code.')
         }
 
-        // By default ignoreErrors will ignore all errors and run
-        // the entire script before returning.
-
         String script = '''\
         fakeCommand
-        anotherFakeCommand
+        willNotRun
         '''
 
-        // The false we are passing determines if the command output is to be
-        // displayed in the build console.
-        result = bash.ignoreErrors(script, false)
+        // The true we are passing determines if the command
+        // is run silently or not.
+        result = bash.ignoreErrors(script, true)
 
-        if ( !result.stdErr.contains('anotherFakeCommand') ) {
+        // By default all bash commands will stop on
+        // the first error.
+        if ( result.stdErr.contains('willNotRun') ) {
+            error('Should have stopped on first error.')
+        }
+
+        script = """\
+        moreFakeCommands
+        commandWillRun
+        """
+
+        // If you want to run all the commands, regardless of errors,
+        // Set failFast to false
+        bash.failFast = false
+        result = bash.ignoreErrors(script)
+
+        if ( !result.stdErr.contains('commandWillRun') ) {
             error('Should not stop on first error.')
         }
 
-        // If you want to return on the first error,
-        // set failfast to true.
-        result = bash.ignoreErrors(script, false, true)
-
-        if ( result.stdErr.contains('anotherFakeCommand') ) {
-            error('Should stop on first error.')
-        }
-
-        result = bash.ignoreErrors('exit 55', false)
+        result = bash.ignoreErrors('exit 55', true)
 
         if ( result.exitCode != 55 ) {
             error('Should capture the correct exitCode.')

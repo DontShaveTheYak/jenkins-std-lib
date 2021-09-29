@@ -2,7 +2,10 @@ package org.dsty.bash
 
 /**
  * Custom Exception thrown by the bash global variable.
+ * @deprecated As of release 0.10.0, replaced by
+ *             {@link org.dsty.system.os.shell.ExecutionException org.dsty.system.os.shell.ExecutionException}
  */
+@Deprecated
 class ScriptError extends Exception {
 
     /**
