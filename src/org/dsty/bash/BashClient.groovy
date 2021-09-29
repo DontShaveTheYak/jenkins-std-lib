@@ -4,7 +4,9 @@ import org.dsty.logging.LogClient
 
 /**
  * Bash Client
+ * @deprecated As of release 0.10.0, replaced by {@link org.dsty.system.os.shell.Bash org.dsty.system.os.shell.Bash}
  */
+@Deprecated
 class BashClient implements Serializable {
 
     /**

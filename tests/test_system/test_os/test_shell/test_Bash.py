@@ -2,7 +2,7 @@ from tests.conftest import Container
 
 def test_bash_example(container: Container):
 
-    job_output = container('bash/bash_example.groovy')
+    job_output = container('system/os/shell/bash_example.groovy')
 
     # Test regular bash
     assert "Hello from Bash!" in job_output
@@ -13,5 +13,5 @@ def test_bash_example(container: Container):
 
     # Test ignoreErrors bash
     assert "fakecommand: command not found" in job_output
-    assert "secretcommand" not in job_output
-    assert "anothercommand" not in job_output
+    assert "willNotRun" not in job_output
+    assert "commandWillRun" in job_output
