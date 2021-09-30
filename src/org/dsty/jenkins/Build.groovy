@@ -1,6 +1,8 @@
 /* groovylint-disable LineLength, UnnecessaryGetter */
 package org.dsty.jenkins
 
+import hudson.EnvVars
+
 /**
  * Returns the WorkFlowScript from the current build. This object has access
  * to pipeline steps like <code>sh()</code>, <code>checkout()</code> and
@@ -19,7 +21,17 @@ Object getWorkFlowScript() {
  * @return A Map of environment variables.
  */
 Map<String, String> environmentVars() {
-    return getContext(hudson.EnvVars)
+    return getEnvironment()
+}
+
+/**
+ * Returns the {@link EnvVars} for the current build.
+ *
+ * @return The {@link EnvVars} object.
+ * @see hudson.EnvVars
+ */
+EnvVars getEnvironment() {
+    return getCurrentContext(EnvVars)
 }
 
 /**
