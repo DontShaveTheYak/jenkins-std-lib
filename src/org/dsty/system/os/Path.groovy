@@ -28,11 +28,6 @@ class Path implements Serializable {
     private final FilePath fp
 
     /**
-     * Internal {@link Build} object.
-     */
-    final static private Build BUILD = new Build()
-
-    /**
      * Creates a Path from a String reprensentation.
      *
      * @param path An absolute path on the system. The path doesn't have to exist yet.
@@ -660,7 +655,10 @@ class Path implements Serializable {
      * @return A {@link Path} to the current working directory.
      */
     static Path cwd() {
-        FilePath cwd = BUILD.getCurrentContext(FilePath.class)
+        // Making build a static field caused random errors
+        final Build build = new Build()
+
+        FilePath cwd = build.getCurrentContext(FilePath.class)
 
         return new Path(cwd)
     }
@@ -672,7 +670,10 @@ class Path implements Serializable {
      * @return A {@link Path} to the current users home.
      */
     static Path userHome() {
-        Map<String, String> envVars = BUILD.environmentVars()
+        // Making build a static field caused random errors
+        final Build build = new Build()
+
+        Map<String, String> envVars = build.environmentVars()
 
         return new Path(envVars.HOME)
     }
@@ -683,7 +684,10 @@ class Path implements Serializable {
      * @return A {@link Path} to the Jenkins home directory.
      */
     static Path jenkinsHome() {
-        Map<String, String> envVars = BUILD.environmentVars()
+        // Making build a static field caused random errors
+        final Build build = new Build()
+
+        Map<String, String> envVars = build.environmentVars()
 
         return new Path(envVars.JENKINS_HOME)
     }
