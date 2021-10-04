@@ -1,5 +1,5 @@
 /* groovylint-disable CatchException, DuplicateStringLiteral, FactoryMethodName, UnnecessaryGetter, MethodCount */
-package org.dsty.os
+package org.dsty.system.os
 
 import hudson.FilePath
 import java.util.Date
@@ -19,21 +19,13 @@ import org.dsty.jenkins.Build
  * <a href="Path.html#jenkinsHome()">Path.jenkinsHome()</a>. You can obtain a
  * {@link Path} to the current working directory with
  * <a href="Path.html#cwd()">Path.cwd()</a>.
- *
- * @deprecated As of release 0.10.0, replaced by {@link org.dsty.system.Path org.dsty.system.Path}
  */
-@Deprecated
 class Path implements Serializable {
 
     /**
      * Internal {@link FilePath} object.
      */
     private final FilePath fp
-
-    /**
-     * Internal {@link Build} object.
-     */
-    final static private Build BUILD = new Build()
 
     /**
      * Creates a Path from a String reprensentation.
@@ -663,7 +655,10 @@ class Path implements Serializable {
      * @return A {@link Path} to the current working directory.
      */
     static Path cwd() {
-        FilePath cwd = BUILD.getCurrentContext(FilePath.class)
+        // Making build a static field caused random errors
+        final Build build = new Build()
+
+        FilePath cwd = build.getCurrentContext(FilePath.class)
 
         return new Path(cwd)
     }
@@ -675,7 +670,10 @@ class Path implements Serializable {
      * @return A {@link Path} to the current users home.
      */
     static Path userHome() {
-        Map<String, String> envVars = BUILD.environmentVars()
+        // Making build a static field caused random errors
+        final Build build = new Build()
+
+        Map<String, String> envVars = build.environmentVars()
 
         return new Path(envVars.HOME)
     }
@@ -686,7 +684,10 @@ class Path implements Serializable {
      * @return A {@link Path} to the Jenkins home directory.
      */
     static Path jenkinsHome() {
-        Map<String, String> envVars = BUILD.environmentVars()
+        // Making build a static field caused random errors
+        final Build build = new Build()
+
+        Map<String, String> envVars = build.environmentVars()
 
         return new Path(envVars.JENKINS_HOME)
     }

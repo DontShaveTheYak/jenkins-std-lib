@@ -4,7 +4,9 @@ import com.cloudbees.groovy.cps.NonCPS
 
 /**
  * Contains the results of a bash script execution.
+ * @deprecated As of release 0.10.0, replaced by {@link org.dsty.system.os.shell.Result org.dsty.system.os.shell.Result}
  */
+@Deprecated
 class Result implements Serializable {
 
     /**

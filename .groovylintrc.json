@@ -1,6 +1,9 @@
 {
     "extends": "recommended",
     "rules": {
+        "BlockStartsWithBlankLine": {
+            "enabled": false
+        },
         "CompileStatic": {
             "enabled": false
         },
