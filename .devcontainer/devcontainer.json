@@ -1,0 +1,58 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.191.1/containers/docker-existing-dockerfile
+{
+	"name": "jenkins-std-lib",
+	// Sets the run context to one level up instead of the .devcontainer folder.
+	"context": "..",
+	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+	"dockerFile": "../.devcontainer/Dockerfile",
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4,
+		"groovy.classpath": [
+			"/var/jenkins_home/pipeline-library/build/dependencies"
+		]
+	},
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-azuretools.vscode-docker",
+		"dontshavetheyak.jenkins-extension-pack",
+		"eamodio.gitlens",
+		"ms-python.python"
+	],
+	// By default vscode sets the entrypoint to infinite sleep loop
+	"overrideCommand": false,
+	// Put the workspace in the jenkins home directory so it can be installed into the jenkins as a shared library.
+	"workspaceMount": "source=${localWorkspaceFolder},target=/var/jenkins_home/pipeline-library,type=bind,consistency=cached",
+	"workspaceFolder": "/var/jenkins_home/pipeline-library",
+	"containerEnv": {
+		"DIND_WORKSPACE": "${localWorkspaceFolder}"
+	},
+	// Set the build args
+	// "build": {
+	// 	"args": {
+	// 		"PRE_COMMIT_VERSION": "latest",
+	// 		"TERRAFORM_VERSION": "latest",
+	// 		"TERRAFORM_DOCS_VERSION": "latest",
+	// 		"TERRASCAN_VERSION": "latest",
+	// 		"TFLINT_VERSION": "latest",
+	// 		"TFSEC_VERSION": "latest"
+	// 	}
+	// },
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [8080, 50000],
+	"appPort": [
+		"5050:80"
+	],
+	// Uncomment the next line to run commands after the container is created - for example installing curl.
+	"postStartCommand": "./gradlew downloadJars",
+	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
+	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
+	"mounts": [
+		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+	],
+	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "vscode"
+}
