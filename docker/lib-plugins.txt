@@ -1,2 +1,1 @@
-git:4.7.2
-sshd:3.0.3
+workflow-aggregator:2.6
