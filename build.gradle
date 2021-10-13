@@ -124,6 +124,10 @@ repositories {
     }
 }
 
+configurations {
+    contrib.extendsFrom compileOnly
+}
+
 dependencies {
     // Use the latest Groovy version for building this library
     compileOnly('org.codehaus.groovy:groovy-all:3.0.9')
@@ -140,6 +144,6 @@ task downloadJars(type: Copy) {
 
     into "${buildDir}/dependencies"
 
-    from configurations.compileOnly
+    from configurations.contrib
 
 }
