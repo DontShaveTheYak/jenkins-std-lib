@@ -64,7 +64,7 @@ You can support my efforts in any of the following ways:
 * Star this repo! :star_struck:
 * Follow me on [Twitter](https://twitter.com/DontShaveTheYak).
 * Spread the word :grin:
-* Contribute to this repo! (Guide coming soon...ish)
+* Contribute to this repo using the [guide](./CONTRIBUTING.md)!
 * Sponsor me on [GitHub](https://github.com/sponsors/shadycuz) :heart_eyes:
 * Support me on [Patreon](https://www.patreon.com/DontShaveTheYak) :smiling_face_with_three_hearts:
 ## License

@@ -37,28 +37,36 @@ In general, we follow the ["fork-and-pull" Git workflow](https://github.com/susa
 7. Open a PR in our repository so that we can efficiently review the changes.
 
 ### Code Style
-We are using GroovyLint to create a consistent experience when reading code. Besides GroovyLint we also ask that Class contructors only take a single argument and thats the workflow script. If you need additional aruguments for your class please use a property/field instead. We prefer this because when using our library to create jobs the user will almost never have autocompletion and groovy has poor support for keyword arguments.
-
-Example:
-```groovy
-// Don't do this
-def myBook = new Book(this, 'A guide to Jenkins', 15)
-
-// Do this
-def myBook = new Book(this)
-myBook.title = 'A guide to Jenkins'
-myBook.chapters = 15
-
-// This might also be okay but usually only in methods
-def myBook = new Book(this, title: 'A guide to Jenkins', chapters: 15)
-```
+We are using GroovyLint to create a consistent experience when reading the source code. We do often ignore certain rules from GroovyLint like getter/setter rules so feel free to ignore a rule that you don't think applies.
 
 ### Setup
 The testing of this library is a little quirky. We currently test the library by creating Jenkins jobs in the [jobs](./jobs) folder. The format is `jobs/${packageName}/${className}_example.groovy` and this serves a basic example for users on how to use the class. You can also create unit tests using this format `jobs/${packageName}/tests/test_${className}.groovy`
 
 We then use pytest to call a docker image that will run the jenkins job and return the output of the job. Pytest files use the following format `tests/test_${packageName}/test_${className}.py`
 
-#### Development environment
+## Development environment
+
+We highly recommend the development environment we have setup for [vscode](https://code.visualstudio.com/). This development environment contains all the tooling and dependencies you need to contribute to this project and will save you hours of time setting up these items manually.
+
+### vscode
+
+The requirements for using the vscode dev environment is to have the [remote-containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed.
+
+When you first open this repository in vscode you will get a notification that this workspace contains a dev container. Click "**Reopen in Container**"
+
+If you miss the notification you can manually open the workspace in a remote container by opening up the command palette `CTRL+SHIFT+P` and type `Open Workspace in Container`.
+
+Note: The first time you open the workspace using the remote-container it will take 5-10mins to configure the development environment. The next time you use the remote-container it will open much faster.
+
+Once opened in the dev container you can:
+* Run linting with `pre-commit run -a`
+* Open `http://localhost:5050` in your browser to access the Jenkins UI and run tests manually. When you click build on a job, it will automaticly use the latest job/library code.
+* Run all the tests in Jenkins UI automaticlly with `pytest -s`
+
+### Manual
+
+If you are not using docker or vscode you can setup a development environment using the following steps:
+
 1. Have python (we use 3.9) installed and you should probably setup a venv. [Pyenv Guide](https://switowski.com/blog/pyenv)
 2. Install the python requirements.
     ```
