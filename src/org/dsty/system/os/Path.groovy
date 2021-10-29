@@ -1,10 +1,12 @@
 /* groovylint-disable CatchException, DuplicateStringLiteral, FactoryMethodName, UnnecessaryGetter, MethodCount */
 package org.dsty.system.os
 
+import java.net.URL
 import hudson.FilePath
 import java.util.Date
 import hudson.util.io.ArchiverFactory
 import com.cloudbees.groovy.cps.NonCPS
+import hudson.model.TaskListener
 
 import org.dsty.jenkins.Build
 
@@ -374,6 +376,56 @@ class Path implements Serializable {
     @NonCPS
     int hashCode() {
         return fp.hashCode()
+    }
+
+    /**
+     * Downloads a tgz/zip file from a URL and extracts it to the current {@link Path}, if necessary.
+     * <p>
+     * This method is a convenience method designed for installing a binary package to a location
+     * that supports upgrade and downgrade. Specifically,
+     * <ul>
+     * <li>If the target directory doesn't exist {@linkplain #mkdirs() it will be created}.
+     * <li>The timestamp of the archive is left in the installation directory upon extraction.
+     * <li>If the timestamp left in the directory does not match the timestamp of the current archive file,
+     *     the directory contents will be discarded and the archive file will be re-extracted.
+     * <li>If the connection is refused but the target directory already exists, it is left alone.
+     * </ul>
+     *
+     * @param downloadURL  The URL to download the tgz/zip file from. This URL must support the
+     *                     {@code Last-Modified} header.
+     * @return  <code>true</code> if the archive was extracted. false if the extraction was skipped
+     *          because the target directory was considered up to date.
+     */
+    Boolean installIfNecessaryFrom(String downloadURL) {
+        return installIfNecessaryFrom(downloadURL, "Extracting to ${fp.getRemote()}")
+    }
+
+    /**
+     * Downloads a tgz/zip archive file from a URL and extracts it to the current {@link Path}, if necessary.
+     * <p>
+     * This method is a convenience method designed for installing a binary package to a location
+     * that supports upgrade and downgrade. Specifically,
+     * <ul>
+     * <li>If the target directory doesn't exist {@linkplain #mkdirs() it will be created}.
+     * <li>The timestamp of the archive is left in the installation directory upon extraction.
+     * <li>If the timestamp left in the directory does not match the timestamp of the current archive file,
+     *     the directory contents will be discarded and the archive file will be re-extracted.
+     * <li>If the connection is refused but the target directory already exists, it is left alone.
+     * </ul>
+     *
+     * @param downloadURL  The URL to download the tgz/zip file from. This URL must support the
+     *                     {@code Last-Modified} header.
+     * @param extractMsg   A msg that is displayed in the build console if the arhcive
+     * @return  <code>true</code> if the archive was extracted. false if the extraction was skipped
+     *          because the target directory was considered up to date.
+     */
+    Boolean installIfNecessaryFrom(String downloadURL, String extractMsg) {
+        final URL url = new URL(downloadURL)
+
+        final Build build = new Build()
+        final TaskListener task = build.getCurrentContext(hudson.model.TaskListener)
+
+        return fp.installIfNecessaryFrom(url, task, extractMsg)
     }
 
     /**
