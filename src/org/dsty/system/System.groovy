@@ -24,12 +24,13 @@ enum System {
     DARWIN
 
     /**
-     * Gets the current {@link Shell} for the {@link System}.
+     * Gets the current {@link org.dsty.system.os.shell.Shell} for the {@link System}.
      * <p>
-     * Most {@link System Systems} can have more than one {@link Shell}. The default shell is
-     * determine by {@link Platform#unixShell}, {@link Platform#winShell} and {@link Platform#darwinShell}.
+     * Most {@link System Systems} can have more than one {@link org.dsty.system.os.shell.Shell}.
+     * The default shell is determine by {@link Platform#unixShell}, {@link Platform#winShell}
+     * and {@link Platform#darwinShell}.
      *
-     * @return  The {@link Shell} for the current {@link System}.
+     * @return  The {@link org.dsty.system.os.shell.Shell} for the current {@link System}.
      */
     Shell getShell() {
 

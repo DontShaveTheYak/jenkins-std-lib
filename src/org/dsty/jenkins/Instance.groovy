@@ -3,6 +3,7 @@ package org.dsty.jenkins
 
 import com.cloudbees.groovy.cps.NonCPS
 import jenkins.model.Jenkins
+import org.dsty.system.os.Path
 
 /**
  * This class represents the current Jenkins instance. It can be used to
@@ -35,6 +36,29 @@ class Instance implements Serializable {
     @NonCPS
     static List<String> plugins() {
         return Jenkins.instance.pluginManager.plugins*.getShortName()
+    }
+
+    /**
+     * Gets the {@link org.dsty.system.os.Path Path} to the directory where build tools are installed.
+     * <p>
+     * The directory can be configured with the environment variable <code>JSL_TOOLS_DIR</code>.
+     * This is useful to set the tool directory to someplace outside of the build workspace so that
+     * tools are cached between builds. This can also be set to a directory shared with multiple agents
+     * using a shared filesystem. This allows tools to be cached across multiple agents.
+     * <p>
+     * If the <code>JSL_TOOLS_DIR</code> envrionment variable is not set to a value then this
+     * method returns <code>null</code>.
+     *
+     * @return  The {@link org.dsty.system.os.Path Path} to the tool installation directory.
+     */
+    static Path toolsDir() {
+        Path toolDir
+
+        Map envVars = new Build().environmentVars()
+
+        toolDir = envVars.JSL_TOOLS_DIR ? Path(envVars.JSL_TOOLS_DIR) : null
+
+        return toolDir
     }
 
 }
