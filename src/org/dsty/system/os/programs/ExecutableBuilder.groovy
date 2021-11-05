@@ -32,7 +32,7 @@ class ExecutableBuilder {
 
         final System os = Platform.system()
 
-        if (os.value() != 'UNIX') {
+        if (os.name() != 'UNIX') {
             throw new Exception('UnsupportedSystemException')
         }
 

@@ -4,7 +4,7 @@ package org.dsty.system.os.programs
 import org.dsty.system.os.Path
 
 /**
- * A {@link Executable} that be run on <code>UNIX</code> systems.
+ * A {@link Executable} that can be run on <code>UNIX</code> systems.
  */
 class UnixExecutable extends AbstractExecutable {
 

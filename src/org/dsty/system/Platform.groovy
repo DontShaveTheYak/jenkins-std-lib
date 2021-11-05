@@ -12,17 +12,17 @@ import org.dsty.jenkins.Build
 class Platform implements Serializable {
 
     /**
-     * Sets the default {@link Shell} for the <code>UNIX</code> system.
+     * Sets the default {@link org.dsty.system.os.shell.Shell} for the <code>UNIX</code> system.
      */
     static Class<Shell> unixShell = Bash
 
     /**
-     * Sets the default {@link Shell} for the <code>WINDOWS</code> system.
+     * Sets the default {@link org.dsty.system.os.shell.Shell} for the <code>WINDOWS</code> system.
      */
     static Class<Shell> winShell
 
     /**
-     * Sets the default {@link Shell} for the <code>DARWIN</code> system.
+     * Sets the default {@link org.dsty.system.os.shell.Shell} for the <code>DARWIN</code> system.
      */
     static Class<Shell> darwinShell
 
@@ -65,7 +65,7 @@ class Platform implements Serializable {
      * The default shell for each system can be set by modifying the fields
      * {@link #unixShell}, {@link #winShell} and {@link #darwinShell}.
      *
-     * @return A {@link Shell}.
+     * @return A {@link org.dsty.system.os.shell.Shell}.
      */
     static Shell getShell() {
 
