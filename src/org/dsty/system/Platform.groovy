@@ -2,7 +2,6 @@
 package org.dsty.system
 
 import org.dsty.system.os.shell.Bash
-import org.dsty.system.os.shell.Result
 import org.dsty.system.os.shell.Shell
 import org.dsty.jenkins.Build
 
@@ -13,27 +12,26 @@ import org.dsty.jenkins.Build
 class Platform implements Serializable {
 
     /**
-     * Sets the default {@link Shell} for the <code>UNIX</code> system.
+     * Sets the default {@link org.dsty.system.os.shell.Shell} for the <code>UNIX</code> system.
      */
     static Class<Shell> unixShell = Bash
 
     /**
-     * Sets the default {@link Shell} for the <code>WINDOWS</code> system.
+     * Sets the default {@link org.dsty.system.os.shell.Shell} for the <code>WINDOWS</code> system.
      */
     static Class<Shell> winShell
 
     /**
-     * Sets the default {@link Shell} for the <code>DARWIN</code> system.
+     * Sets the default {@link org.dsty.system.os.shell.Shell} for the <code>DARWIN</code> system.
      */
     static Class<Shell> darwinShell
 
     /**
-     * Returns the system/OS name. The returned value will be one of <code>UNIX</code>,
-     * <code>DARWIN</code> or <code>WINDOWS</code>.
+     * Returns the {@link System} for the current agent.
      *
-     * @return The type of system the current build is running on.
+     * @return The {@link System}.
      */
-    static String system() {
+    static System system() {
 
         Build build = new Build()
 
@@ -45,23 +43,20 @@ class Platform implements Serializable {
             currentPlatform = 'DARWIN'
         }
 
-        return currentPlatform
+        return (currentPlatform as System)
     }
 
     /**
-     * Returns the architecture that is returned from
-     * <code>uname -m</code>.
+     * The architecture value that is returned by the
+     * <code>os.arch</code> java property.
      *
      * @return The architecture type.
-     * @see https://en.wikipedia.org/wiki/Uname
      */
     static String architecture() {
 
-        Shell shell = getShell()
+        final System currentSystem = system()
 
-        Result result = shell.silent('uname -m')
-
-        return result.stdOut.trim()
+        return currentSystem.architecture()
     }
 
     /**
@@ -70,25 +65,13 @@ class Platform implements Serializable {
      * The default shell for each system can be set by modifying the fields
      * {@link #unixShell}, {@link #winShell} and {@link #darwinShell}.
      *
-     * @return A {@link Shell}.
+     * @return A {@link org.dsty.system.os.shell.Shell}.
      */
     static Shell getShell() {
 
-        String platform = system()
+        System currentSystem = system()
 
-        Map<String, Class<Shell>> shells = [
-            'UNIX': unixShell,
-            'WINDOWS': winShell,
-            'DARWIN': darwinShell
-        ]
-
-        Class<Shell> platformShell = shells[platform]
-
-        if (!platformShell) {
-            throw new Exception('UnsupportedPlatform')
-        }
-
-        return platformShell.newInstance()
+        return currentSystem.getShell()
     }
 
 }

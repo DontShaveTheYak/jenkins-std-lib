@@ -74,9 +74,14 @@ class Workflow implements Serializable {
      * a specific version.
      */
     void install() throws ScriptError {
+
+        final String installerURL = 'https://raw.githubusercontent.com/nektos/act/master/install.sh'
+
+        final String versionCmd = "set -o pipefail; ${this.steps.env.WORKSPACE}/act --version | cut -d' ' -f3"
+
         this.log.info('Installing Act.')
 
-        Result result = this.bash.ignoreErrors(/set -o pipefail; act --version | cut -d' ' -f3/, false, true)
+        Result result = this.bash.ignoreErrors(versionCmd, false, true)
 
         Closure alreadyInstalled = {
             this.version = "v${result.stdOut}"
@@ -86,15 +91,15 @@ class Workflow implements Serializable {
 
         Closure installLatest = {
             this.log.info('Downloading the latest version.')
-            this.bash.call('curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash')
+            this.bash.call("curl ${installerURL} | bash -s -- -b ${this.steps.env.WORKSPACE}")
         }
 
         Closure installVersion = {
             this.log.info("Downloading version ${this.version}.")
             this.bash.call("""\
-                curl https://raw.githubusercontent.com/nektos/act/master/install.sh -o .install_act
+                curl ${installerURL} -o .install_act
                 chmod +x .install_act
-                sudo bash .install_act ${this.version}""".stripIndent()
+                bash .install_act -b ${this.steps.env.WORKSPACE} ${this.version}""".stripIndent()
             )
 
             this.version = null
@@ -109,7 +114,7 @@ class Workflow implements Serializable {
         }
 
         if (!this.version) {
-            String version = this.bash.call(/set -o pipefail; act --version | cut -d' ' -f3/).stdOut
+            String version = this.bash.call(versionCmd).stdOut
             this.version = "v${version}"
         }
 
@@ -134,7 +139,7 @@ class Workflow implements Serializable {
      * @return The output from the <strong>act</strong> command.
      */
     String run(String args) throws ScriptError {
-        Result result = this.bash.call("act ${args}")
+        Result result = this.bash.call("${this.steps.env.WORKSPACE}/act ${args}")
 
         return result.output
     }

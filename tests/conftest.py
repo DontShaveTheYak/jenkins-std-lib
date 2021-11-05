@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Callable, Generator
+from typing import Callable, Generator, Optional
 import shutil
 
 import docker
@@ -32,6 +32,12 @@ def container(client: docker.DockerClient)-> Generator[Container, None, None]:
 
     shutil.rmtree(tmp_home, ignore_errors=True)
     shutil.copytree(lib_path, f"{tmp_home}/pipeline-library", dirs_exist_ok=True,)
+
+    dind_path: Optional[str] = os.getenv('DIND_WORKSPACE')
+
+    if dind_path:
+        jobs_path = f"{dind_path}/jobs"
+        lib_path = dind_path
 
     volumes = {
         jobs_path: {

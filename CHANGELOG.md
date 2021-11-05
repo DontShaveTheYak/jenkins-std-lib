@@ -1,5 +1,7 @@
 # Changelog
 
+This has been deprecated until I can automate it, for now please see the GitHub [releases](https://github.com/DontShaveTheYak/jenkins-std-lib/releases).
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
