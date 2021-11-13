@@ -15,8 +15,12 @@ RUN apt-get update && \
 RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
     sh get-docker.sh
 
-## Plugins
-RUN jenkins-plugin-cli --plugins workflow-aggregator filesystem_scm git
+## Plugins for container
+RUN jenkins-plugin-cli --plugins filesystem_scm git
+
+## Plugins required for library
+COPY docker/prod/plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 
 ## Setup init scripts
 COPY docker/prod/init_scripts/* /usr/share/jenkins/ref/init.groovy.d/
