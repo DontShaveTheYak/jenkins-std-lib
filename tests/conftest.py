@@ -24,11 +24,13 @@ def container(client: docker.DockerClient)-> Generator[Container, None, None]:
         Generator[Callable[[str], str], None, None]: A function that will run Jenkins jobs.
     """
 
-    image = os.getenv('CUSTOM_RUNNER', 'shadycuz/jenkins-std-lib')
-
     jobs_path: str = str(Path(__file__, '../../jobs').resolve())
     lib_path: str = str(Path(__file__, '../../').resolve())
     tmp_home: str = '/tmp/jenkins_home'
+
+    (baseImage, _ ) = client.images.build(path=lib_path, dockerfile='docker/prod/Dockerfile', tag='jsl_prod', rm=True)
+
+    (image, _ ) = client.images.build(path=lib_path, dockerfile='docker/jfr/Dockerfile', tag='jsl_jfr', buildargs={'baseImage': baseImage.id}, rm=True)
 
     shutil.rmtree(tmp_home, ignore_errors=True)
     shutil.copytree(lib_path, f"{tmp_home}/pipeline-library", dirs_exist_ok=True,)
@@ -54,7 +56,7 @@ def container(client: docker.DockerClient)-> Generator[Container, None, None]:
         }
     }
 
-    container = client.containers.run(image,tty=True, entrypoint='bash',detach=True, volumes=volumes)
+    container = client.containers.run(image.id,tty=True, entrypoint='bash',detach=True, volumes=volumes)
 
     def run_test(job_path: str)-> str:
         """Runs the specified job using the jenkins runner.
@@ -71,7 +73,15 @@ def container(client: docker.DockerClient)-> Generator[Container, None, None]:
         exitcode: int
         raw_output: bytes
 
-        exitcode, raw_output = container.exec_run(f"/app/bin/jenkinsfile-runner -w /app/jenkins -p /usr/share/jenkins/ref/plugins --runWorkspace /var/jenkins_home/workspace/job -f /workspace/{job_path}")
+        cmd = (
+            "/app/bin/jenkinsfile-runner -w /usr/share/jenkins "
+            "--withInitHooks /usr/share/jenkins/ref/init.groovy.d "
+            "-p /usr/share/jenkins/ref/plugins "
+            "--runWorkspace /var/jenkins_home/workspace/job "
+            f"-f /workspace/{job_path}"
+        )
+
+        exitcode, raw_output = container.exec_run(cmd, user='root')
 
         output = raw_output.decode('utf-8')
 
