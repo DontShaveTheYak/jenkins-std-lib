@@ -6,7 +6,7 @@
 [DontShaveTheYak](https://github.com/DontShaveTheYak) presents the Jenkins Standard Library. A set of useful tools for every day CI/CD jobs.
 
 Why use our library?
-* Portable! This library requires very few [plugins](./docker/lib-plugins.txt).
+* Portable! This library requires very few [plugins](./docker/prod/plugins.txt).
 * OpenSource and [Free to use](https://choosealicense.com/licenses/gpl-3.0/)
 * We fully [test][test-url] and [lint][test-url] this codebase.
 * Our [Releases][releases-url] and [Docs][doc-url] are automated.
@@ -43,7 +43,7 @@ We recommend the following plugins:
   ```
 * [AnsiColor](https://plugins.jenkins.io/ansicolor/) - To get color coded log messages from our logging package.
 
-The required plugins and versions to enable complete library functionality can be found in [lib-plugins.txt](./docker/lib-plugins.txt).
+The required plugins enable complete library functionality can be found in [plugins.txt](./docker/prod/plugins.txt).
 
 *Note: Individual library functions may have their own requirements. See the [docs][doc-url]*
 

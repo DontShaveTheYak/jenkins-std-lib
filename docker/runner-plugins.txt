@@ -1,4 +1,0 @@
-configuration-as-code-groovy:1.1
-filesystem_scm:2.1
-jdk-tool:1.5
-git
