@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
 
       - name: Run FOSSA scan and upload build data
-        uses: fossa-contrib/fossa-action@v1.1.4
+        uses: fossa-contrib/fossa-action@v1.2.0
         with:
           fossa-api-key: 7c94ee8610054ec8084c954b58615e0e
 
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
 
       - name: Set up Python
         uses: actions/setup-python@v2.2.2
