@@ -72,7 +72,7 @@ jobs:
     needs: [tag, publish]
     steps:
       - name: Create Draft Release
-        uses: release-drafter/release-drafter@v5.15.0
+        uses: release-drafter/release-drafter@v5.16.1
         if: github.base_ref == 'develop'
         with:
           tag: ${{needs.tag.outputs.tag}}
@@ -82,7 +82,7 @@ jobs:
 
       - name: Create Release
         id: release_info
-        uses: release-drafter/release-drafter@v5.15.0
+        uses: release-drafter/release-drafter@v5.16.1
         if: github.base_ref == 'master'
         with:
           tag: ${{needs.tag.outputs.tag}}
