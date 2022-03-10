@@ -23,14 +23,6 @@ node() {
         error('Should have override the installed version.')
     }
 
-    // Should use existing version
-    workflow.version = ''
-    workflow.install()
-
-    if (olderVersion != workflow.version) {
-        error('Should not have changed version.')
-    }
-
     String output = workflow.run('--version')
 
     if (!output.contains(workflow.version.replace('v', ''))) {
