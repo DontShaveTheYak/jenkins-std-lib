@@ -9,21 +9,21 @@ node() {
 
     stage('Checkout code') {
         checkout(
-      changelog: false,
-      poll: false,
-      scm: [
-        $class: 'GitSCM',
-        branches: [[name: 'master']],
-        extensions: [],
-        userRemoteConfigs: [[url: 'https://github.com/cplee/github-actions-demo.git']]
-      ]
-    )
+            changelog: false,
+            poll: false,
+            scm: [
+                $class: 'GitSCM',
+                branches: [[name: 'master']],
+                extensions: [],
+                userRemoteConfigs: [[url: 'https://github.com/cplee/github-actions-demo.git']]
+            ]
+        )
     }
 
     stage('Run Workflow') {
         Workflow workflow = new Workflow(this)
 
-        String output =  workflow()
+        String output = workflow()
     }
 
     // Ignore this line its for catching CPS issues.
