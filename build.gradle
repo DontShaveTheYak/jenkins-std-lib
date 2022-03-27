@@ -31,6 +31,10 @@ java {
     withSourcesJar()
 }
 
+task removeDuplicateFiles(type: Delete) {
+    delete "${buildDir}/tmp/groovydoc"
+}
+
 groovydoc {
     use = true
     overviewText = resources.text.fromString('Bringing the Zen of Python to Jenkins.')
@@ -42,6 +46,8 @@ task groovydocJar(type: Jar, dependsOn: groovydoc ) {
     classifier 'javadoc' // must use javadoc classifier to be able to deploy to Sonatype
     from groovydoc.destinationDir
 }
+
+groovydoc.finalizedBy removeDuplicateFiles
 
 publishing {
     publications {
