@@ -63,20 +63,6 @@ class LogClient implements Serializable {
     }
 
     /**
-     * Load the workflow steps from the current Build.
-     */
-    Object getSteps() {
-
-        if (!this.@steps) {
-            final Build currentBuild = new Build()
-            /* groovylint-disable-next-line UnnecessaryGetter */
-            this.steps = currentBuild.getWorkFlowScript()
-        }
-
-        return this.@steps
-    }
-
-    /**
      * Logs a message to the console in <font color="green">green</font>.
      * @param input The item you want to output to console.
      */
@@ -143,7 +129,21 @@ class LogClient implements Serializable {
         return prettyPrint(toJson(item))
     }
 
-    String writeMsg(Object input, String colorCode) {
+    /**
+     * Load the workflow steps from the current Build.
+     */
+    private Object getSteps() {
+
+        if (!this.@steps) {
+            final Build currentBuild = new Build()
+            /* groovylint-disable-next-line UnnecessaryGetter */
+            this.steps = currentBuild.getWorkFlowScript()
+        }
+
+        return this.@steps
+    }
+
+    private String writeMsg(Object input, String colorCode) {
         if (this.printColor) {
             this.steps.ansiColor('xterm') {
                 this.steps.println("\u001B[${colorCode}m${input}\u001B[0m")
