@@ -37,8 +37,28 @@ class LogClient implements Serializable {
      * import org.dsty.logging.LogClient
      *LogClient log = new LogClient()
      * }</pre>
+     *
+     * @since 0.12.0
      */
     LogClient() {
+        this.printColor = useColor()
+    }
+
+    /**
+     * Optional Constructor for backwards compatability
+     * <p>
+     * Example:
+     * <pre>{@code
+     * import org.dsty.logging.LogClient
+     *LogClient log = new LogClient(this)
+     * }</pre>
+     *
+     * @deprecated As of release 0.12.0, replaced by {@link #LogClient()}
+     * @param steps The workflow script representing the jenkins build.
+     */
+    @Deprecated
+    LogClient(Object steps) {
+        this.steps = steps
         this.printColor = useColor()
     }
 
