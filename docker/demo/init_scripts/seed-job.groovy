@@ -62,7 +62,7 @@ final FSSCM fileScm = new FSSCM(jobsDir.getPath(), false, false, false, false, n
 
 final Jenkins jenkins = Jenkins.getInstance()
 
-def existingJob = jenkins.items.find { def job ->
+FreeStyleProject existingJob = jenkins.items.find { def job ->
     job.name == jobName
 }
 
@@ -95,7 +95,11 @@ dslProject.getPublishersList().add(dslBuilder)
 println('== Adding Seed Job to Jenkins')
 jenkins.add(dslProject, jobName)
 
-println('== Triggering Seed Job polling')
-scmTrigger.start(dslProject, true)
+println('== Triggering Seed Job')
+existingJob = jenkins.items.find { def job ->
+    job.name == jobName
+}
+
+existingJob.scheduleBuild2(0)
 
 println('== Seed Job setup complete')
