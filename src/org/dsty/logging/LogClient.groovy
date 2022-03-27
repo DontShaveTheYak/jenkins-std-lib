@@ -4,6 +4,7 @@ package org.dsty.logging
 import static groovy.json.JsonOutput.prettyPrint
 import static groovy.json.JsonOutput.toJson
 import static org.dsty.jenkins.Instance.pluginInstalled
+import org.dsty.jenkins.Build
 
 import com.cloudbees.groovy.cps.NonCPS
 
@@ -11,22 +12,22 @@ import com.cloudbees.groovy.cps.NonCPS
  * Basic logger that uses the <a href="https://plugins.jenkins.io/ansicolor/">AnsiColor</a>
  * plugin to output log messages in color.
  * <p>
- * Set the environment variable {@code PIPELINE_LOG_LEVEL} to
- * {@code DEBUG}, {@code INFO}, {@code WARN} or {@code ERROR} to
+ * Set the environment variable <code>PIPELINE_LOG_LEVEL</code> to
+ * <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code> or <code>ERROR</code> to
  * control logger output. Setting it to any other value will stop
- * all output. If unset it defaults to {@code INFO}.
+ * all output. If unset it defaults to <code>INFO</code>.
  */
 class LogClient implements Serializable {
 
     /**
      * Workflow script representing the jenkins build.
      */
-    private final Object steps
+    private Object steps
 
     /**
      * If we should print in color.
      */
-    Boolean printColor
+    final private Boolean printColor
 
     /**
      * Default Constructor
@@ -34,13 +35,25 @@ class LogClient implements Serializable {
      * Example:
      * <pre>{@code
      * import org.dsty.logging.LogClient
-     *LogClient log = new LogClient(this)
+     *LogClient log = new LogClient()
      * }</pre>
-     * @param steps The workflow script representing the jenkins build.
      */
-    LogClient(Object steps) {
-        this.steps = steps
-        useColor()
+    LogClient() {
+        this.printColor = useColor()
+    }
+
+    /**
+     * Load the workflow steps from the current Build.
+     */
+    Object getSteps() {
+
+        if (!this.@steps) {
+            final Build currentBuild = new Build()
+            /* groovylint-disable-next-line UnnecessaryGetter */
+            this.steps = currentBuild.getWorkFlowScript()
+        }
+
+        return this.@steps
     }
 
     /**
@@ -141,8 +154,8 @@ class LogClient implements Serializable {
     }
 
     @NonCPS
-    private void useColor() {
-        this.printColor = pluginInstalled('ansicolor')
+    private Boolean useColor() {
+        return pluginInstalled('ansicolor')
     }
 
 }
