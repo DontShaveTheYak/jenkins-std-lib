@@ -165,7 +165,7 @@ class Workflow implements Serializable {
      */
     Workflow(Object steps) {
         this.steps = steps
-        this.log = new LogClient(steps)
+        this.log = new LogClient()
         this.bash = new Bash()
     }
 

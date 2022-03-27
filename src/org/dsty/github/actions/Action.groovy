@@ -38,7 +38,7 @@ class Action implements Serializable {
      */
     Action(Object steps) {
         this.steps = steps
-        this.log = new LogClient(steps)
+        this.log = new LogClient()
         this.bash = new BashClient(steps)
     }
 

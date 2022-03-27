@@ -25,7 +25,7 @@ class BashClient implements Serializable {
      */
     BashClient(Object steps) {
         this.steps = steps
-        this.log = new LogClient(steps)
+        this.log = new LogClient()
     }
 
     /**

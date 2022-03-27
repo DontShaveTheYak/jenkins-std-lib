@@ -176,7 +176,7 @@ class Bash implements Shell {
     }
 
     private void setLog() {
-        this.log = new LogClient(this.wfs)
+        this.log = new LogClient()
     }
 
 }

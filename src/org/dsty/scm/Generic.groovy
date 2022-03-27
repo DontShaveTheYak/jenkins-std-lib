@@ -39,7 +39,7 @@ class Generic implements Serializable {
      */
     Generic(Object steps) {
         this.steps = steps
-        this.log = new LogClient(steps)
+        this.log = new LogClient()
     }
 
     /**
