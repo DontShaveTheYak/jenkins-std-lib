@@ -47,6 +47,7 @@ jobs:
   release:
     name: Build and Push Release Images
     runs-on: ubuntu-latest
+    if: contains(github.ref_name, 'SNAPSHOT') != true
     steps:
 
       - name: Set up Docker Buildx
