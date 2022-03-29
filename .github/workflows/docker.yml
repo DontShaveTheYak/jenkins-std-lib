@@ -42,7 +42,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            "baseImage=${{ steps.prod_image.outputs.digest }}"
+            "baseImage=${{ steps.prod_image.outputs.imageid }}"
 
   release:
     name: Build and Push Release Images
@@ -79,4 +79,4 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            "baseImage=${{ steps.prod_image.outputs.digest }}"
+            "baseImage=${{ steps.prod_image.outputs.imageid }}"
