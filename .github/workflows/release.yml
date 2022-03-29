@@ -40,6 +40,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git tag ${{ steps.calculate.outputs.next_tag }} -am "Created by Github Actions"
+          git push --delete origin ${{ steps.calculate.outputs.next_tag }} || true
           git push origin --tags -f
 
   publish:
