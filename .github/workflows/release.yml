@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ssh-key: "${{ secrets.ACTIONS_KEY }}"
 
       - name: Set up Python
         uses: actions/setup-python@v3
@@ -35,15 +36,11 @@ jobs:
         run: python tests/helpers/release.py ${{ steps.latest_tag.outputs.tag }} ${{ github.event.pull_request.number }} ${{ github.base_ref }}
 
       - name: Create Tag
-        id: create_tag
-        uses: K-Phoen/semver-release-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_branch: ${{ github.base_ref }}
-          release_strategy: tag
-          tag_format: ${{ env.TAG_FORMAT }}
-          tag: ${{ steps.calculate.outputs.next_tag }}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag ${{ steps.calculate.outputs.next_tag }} -am "Created by Github Actions"
+          git push origin --tags
 
   publish:
     name: Publish Package
