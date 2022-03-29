@@ -36,7 +36,7 @@ class Step implements Serializable {
      */
     Step(Object steps) {
         this.steps = steps
-        this.log = new LogClient(steps)
+        this.log = new LogClient()
     }
 
     /**

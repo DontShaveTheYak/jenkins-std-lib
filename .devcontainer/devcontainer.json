@@ -46,7 +46,8 @@
 		"5050:80"
 	],
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
-	"postStartCommand": "./gradlew downloadJars",
+	"postStartCommand": "nohup /usr/local/bin/jenkins.sh & ./gradlew downloadJars",
+	// "postCreateCommand": "/sbin/tini -- /usr/local/bin/jenkins.sh &",
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
@@ -54,5 +55,6 @@
 		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
 	],
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
+	"remoteUser": "jenkins",
+	"runArgs": ["--init"]
 }

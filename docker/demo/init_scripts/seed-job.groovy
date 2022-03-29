@@ -8,7 +8,7 @@ import hudson.plugins.filesystem_scm.FSSCM
 
 println('==== Creating seed job')
 final String jobName = 'seed-job'
-final File jobsDir = new File('/var/jenkins_home/pipeline-library/jobs')
+final File jobsDir = new File('/var/jenkins_home/seed-jobs')
 
 final String dslScript = '''\
 import java.nio.file.Path
@@ -16,8 +16,11 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 
-Files.walk(Paths.get('/var/jenkins_home/pipeline-library/jobs')).findAll { Path item ->
-    item.toString().contains('.groovy')
+Files.walk(Paths.get('/var/jenkins_home/seed-jobs')).findAll { Path item ->
+
+    final String jobName = item.toString()
+    jobName.contains('.groovy') && jobName.contains('example')
+
 }.forEach { Path item ->
     final String fileName = item.getFileName()
     final String jobName = fileName.replace('_', '-').replace('.groovy', '')
@@ -59,7 +62,7 @@ final FSSCM fileScm = new FSSCM(jobsDir.getPath(), false, false, false, false, n
 
 final Jenkins jenkins = Jenkins.getInstance()
 
-def existingJob = jenkins.items.find { def job ->
+FreeStyleProject existingJob = jenkins.items.find { def job ->
     job.name == jobName
 }
 
@@ -92,7 +95,11 @@ dslProject.getPublishersList().add(dslBuilder)
 println('== Adding Seed Job to Jenkins')
 jenkins.add(dslProject, jobName)
 
-println('== Triggering Seed Job polling')
-scmTrigger.start(dslProject, true)
+println('== Triggering Seed Job')
+existingJob = jenkins.items.find { def job ->
+    job.name == jobName
+}
+
+existingJob.scheduleBuild2(0)
 
 println('== Seed Job setup complete')

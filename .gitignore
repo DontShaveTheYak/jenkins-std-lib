@@ -167,3 +167,6 @@ dmypy.json
 
 # profiling data
 .prof
+
+# Ignore Jenkins Server output
+nohup.out

@@ -14,6 +14,16 @@ Why use our library?
 
 [![Jenkins](https://cdn.freebiesupply.com/logos/large/2x/jenkins-logo-png-transparent.png)](https://www.jenkins.io/)
 
+## Demo
+
+Do you want to see the features first? We have a docker image that has Jenkins already setup, configured with our library and some sample jobs.
+
+```sh
+docker run -d --rm -p 4000:80 dsty/jenkins:demo
+```
+
+You can then see the jenkins at [127.0.0.1:4000](http://127.0.0.1:4000). If the seed job hasn't run, you can run it manually.
+
 ## Installation
 
 First you need to configure your Jenkins with our Shared Library. In the Jenkins configure page scroll down

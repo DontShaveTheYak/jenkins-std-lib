@@ -27,7 +27,7 @@ class ActionFactory implements Serializable {
      */
     ActionFactory(Object steps) {
         this.steps = steps
-        this.log = new LogClient(steps)
+        this.log = new LogClient()
     }
 
     /**

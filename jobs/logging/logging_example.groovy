@@ -6,7 +6,7 @@ import org.dsty.logging.LogClient
 node() {
     String cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
 
-    LogClient log = new LogClient(this)
+    LogClient log = new LogClient()
 
     String level = 'default'
 
