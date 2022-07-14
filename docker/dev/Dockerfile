@@ -1,4 +1,4 @@
-ARG baseImage=dsty/jenkins
+ARG baseImage=docker.io/dsty/jenkins
 
 FROM ${baseImage}
 
