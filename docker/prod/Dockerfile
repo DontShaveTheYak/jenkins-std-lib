@@ -11,11 +11,11 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y \
-        xz-utils \
-        kmod \
-        wget \
-        git \
-        curl && \
+    xz-utils \
+    kmod \
+    wget \
+    git \
+    curl && \
     rm -rf /var/lib/apt/lists/*
 
 # Install and setup docker into the container
