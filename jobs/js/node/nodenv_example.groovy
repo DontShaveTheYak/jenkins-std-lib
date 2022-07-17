@@ -31,29 +31,22 @@ node() {
 
     node.runCommand('-v')
 
-    log.info('If your terraform project specifies a terraform version like this:')
+    log.info('You can also specify the version in the .node-version file:')
 
-    String tfVersion = '''\
-terraform {
-  required_version = ">= 0.12.9, < 0.15.0"
-
-  required_providers {
-    aws        = ">= 2.52.0"
-    kubernetes = ">= 1.11.1"
-  }
-}
+    String nodeVersion = '''\
+17.9.1
 '''
-    println tfVersion
+    println nodeVersion
 
-    log.info('Then that can be used by nodenv to automaticly install the correct version of terraform.')
+    log.info('Then that can be used by nodenv to automaticly install the correct version of node.')
 
     Path ws = Path.workspace()
 
-    Path tfVersionFile = ws.child('version.tf')
+    Path nodeVersionFile = ws.child('.node-version')
 
-    ws.withTempFile(tfVersionFile) {
+    ws.withTempFile(nodeVersionFile) {
 
-        tfVersionFile.write(tfVersion)
+        nodeVersionFile.write(nodeVersion)
 
         node = nodenv.install()
 

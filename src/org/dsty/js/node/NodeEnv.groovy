@@ -218,6 +218,30 @@ class NodeEnv implements Serializable {
         return this.run(args)
     }
 
+    /**
+     * Installs <code>node</code> automaticly by detecting the correct version.
+     * <p>
+     * The details on how to control which version of <code>node</code> to install
+     * can be found in the <code>nodenv</code>
+     * <a href="https://github.com/nodenv/nodenv#choosing-the-node-version">README</a>.
+     *
+     * @return A {@link CliTool} that can be used to run commands with the <code>node</code>
+     * binary.
+     */
+    CliTool install() throws ExecutionException {
+
+        try {
+            this.run('install')
+        } catch (ExecutionException ex) {
+
+            if (!ex.stdErr.contains('already exists')) {
+                throw ex
+            }
+        }
+
+        return nodeTool()
+    }
+
      /**
      * Installs a specific version of <code>node</code>.
      *
