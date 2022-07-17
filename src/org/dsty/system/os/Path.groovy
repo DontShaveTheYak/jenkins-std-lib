@@ -148,6 +148,7 @@ class Path implements Serializable {
             tmpDir.deleteRecursive()
         } catch (Exception ex) {
             tmpDir.deleteRecursive()
+            throw ex
         }
 
     }
@@ -171,6 +172,7 @@ class Path implements Serializable {
             tempDir.deleteRecursive()
         } catch (Exception ex) {
             tempDir.deleteRecursive()
+            throw ex
         }
 
     }
@@ -194,6 +196,7 @@ class Path implements Serializable {
             tmpFile.delete()
         } catch (Exception ex) {
             tmpFile.delete()
+            throw ex
         }
 
     }
@@ -217,6 +220,7 @@ class Path implements Serializable {
             tempFile.delete()
         } catch (Exception ex) {
             tempFile.delete()
+            throw ex
         }
 
     }
