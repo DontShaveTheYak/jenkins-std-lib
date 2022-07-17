@@ -279,8 +279,15 @@ class NodeEnv implements Serializable {
 
         final String version = '18.5.0'
 
-        this.run("install ${version}")
-        this.run("global ${version}")
+        try {
+            this.run("install ${version}")
+            this.run("global ${version}")
+        } catch (ExecutionException ex) {
+
+            if (!ex.stdErr.contains('already exists')) {
+                throw ex
+            }
+        }
 
         return nodeTool()
     }
@@ -333,7 +340,6 @@ class NodeEnv implements Serializable {
 
         return this.@nodenvInstallDir
     }
-
 
     /**
     * Get the {@link Path} to the node binary.
