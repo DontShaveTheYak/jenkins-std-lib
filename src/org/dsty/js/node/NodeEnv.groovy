@@ -302,8 +302,8 @@ class NodeEnv implements Serializable {
         if (!this.@nodeEnv) {
 
             // The installer doesn't allow us to set a path... so it actually ends up in the home directory.
-            Path binPath = Path.jenkinsHome().child('./.nodenv/bin')
-            Path shimPath = Path.jenkinsHome().child('./.nodenv/shims')
+            Path binPath = this.nodenvInstallDir.child('bin')
+            Path shimPath = this.nodenvInstallDir.child('shims')
 
             // Add the install directory to PATH
             final Build build = new Build()
