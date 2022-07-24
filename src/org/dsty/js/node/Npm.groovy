@@ -1,5 +1,6 @@
 package org.dsty.js.node
 
+import org.dsty.jenkins.Build
 import org.dsty.logging.LogClient
 import org.dsty.system.os.Path
 import org.dsty.system.os.programs.CliTool
@@ -18,6 +19,8 @@ class Npm implements Serializable {
     private final LogClient log
 
     private final CliTool npm
+
+    private Boolean globalPathIsSet = false
 
     Npm(CliTool npm) {
         this.log = new LogClient()
@@ -49,14 +52,37 @@ class Npm implements Serializable {
 
     void installGlobal(String packageName) {
 
+        this.setGlobalPath()
+
         this.run("install -g ${packageName}")
     }
 
     void installGlobal(List<String> packages) {
 
+        this.setGlobalPath()
+
         String packagesArg = packages.join(' ')
 
         this.run("install -g ${packagesArg}")
+    }
+
+    private void setGlobalPath() {
+
+        if (this.globalPathIsSet) {
+            return
+        }
+
+        String prefix = this.run('get prefix').stdOut.trim()
+        Path globalPath = new Path(prefix).child('bin')
+
+        final Build build = new Build()
+        Object wfs = build.getWorkFlowScript()
+
+        String newPath = "${globalPath}:${wfs.env.PATH}"
+
+        wfs.env.PATH = newPath
+
+        this.globalPathIsSet = true
     }
 
     /**
