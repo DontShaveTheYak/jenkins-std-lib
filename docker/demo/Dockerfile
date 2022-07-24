@@ -37,4 +37,4 @@ COPY jobs seed-jobs
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 ENV JENKINS_SLAVE_AGENT_PORT=
 ENV JENKINS_OPTS="--httpPort=80"
-ENV PATH="/$JENKINS_HOME/.local/bin:$PATH"
+ENV PATH="$JENKINS_HOME/.local/bin:$PATH"
