@@ -256,13 +256,14 @@ class NodeEnv implements Serializable {
 
         try {
             this.run("install ${version}")
-            this.run("global ${version}")
         } catch (ExecutionException ex) {
 
             if (!ex.stdErr.contains('already exists')) {
                 throw ex
             }
         }
+
+        this.run("global ${version}")
 
         return nodeTool()
     }
@@ -281,13 +282,14 @@ class NodeEnv implements Serializable {
 
         try {
             this.run("install ${version}")
-            this.run("global ${version}")
         } catch (ExecutionException ex) {
 
             if (!ex.stdErr.contains('already exists')) {
                 throw ex
             }
         }
+
+        this.run("global ${version}")
 
         return nodeTool()
     }
