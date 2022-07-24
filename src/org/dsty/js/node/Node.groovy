@@ -6,6 +6,7 @@ import org.dsty.system.os.programs.CliTool
 import org.dsty.system.os.programs.ToolBuilder
 import org.dsty.system.os.shell.Result
 import org.dsty.system.os.shell.ExecutionException
+import org.dsty.js.node.Npm
 
 /**
  * A class to interact with Nodejs.
@@ -23,7 +24,7 @@ class Node implements Serializable {
 
     String version = 'latest'
 
-    CliTool npm
+    Npm npm
 
     Node() {
         this.log = new LogClient()
@@ -49,11 +50,12 @@ class Node implements Serializable {
         return this.@nodeBin
     }
 
-    private String getNpm() {
+    private Npm getNpm() {
 
         if (!this.@npm) {
 
-            this.npm = this.createTool('npm')
+            CliTool npmTool = this.createTool('npm')
+            this.npm = new Npm(npmTool)
 
         }
 
