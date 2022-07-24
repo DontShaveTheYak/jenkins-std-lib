@@ -311,11 +311,7 @@ class NodeEnv implements Serializable {
 
             String newPath = "${shimPath}:${binPath}:${wfs.env.PATH}"
 
-            this.log.info("Old PATH is ${wfs.env.PATH}")
             wfs.env.PATH = newPath
-            this.log.info("New PATH is ${wfs.env.PATH}")
-
-            this.bash.call('printenv PATH')
 
             // Install nodenv
             final Installer installer = new Installer()
