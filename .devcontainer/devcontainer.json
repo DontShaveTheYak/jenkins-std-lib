@@ -26,9 +26,6 @@
 	// Put the workspace in the jenkins home directory so it can be installed into the jenkins as a shared library.
 	"workspaceMount": "source=${localWorkspaceFolder},target=/var/jenkins_home/pipeline-library,type=bind,consistency=cached",
 	"workspaceFolder": "/var/jenkins_home/pipeline-library",
-	"containerEnv": {
-		"DIND_WORKSPACE": "${localWorkspaceFolder}"
-	},
 	// Set the build args
 	// "build": {
 	// 	"args": {
@@ -46,15 +43,13 @@
 		"5050:80"
 	],
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
-	"postStartCommand": "nohup /usr/local/bin/jenkins.sh & ./gradlew downloadJars",
+	"postStartCommand": "./gradlew downloadJars",
 	// "postCreateCommand": "/sbin/tini -- /usr/local/bin/jenkins.sh &",
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
-	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+	// "runArgs": [ "--cap-add=NET_ADMIN", "--init"],
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
-	"mounts": [
-		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-	],
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "jenkins",
-	"runArgs": ["--init"]
+	"containerUser": "root",
+	"runArgs": [ "--privileged"]
 }

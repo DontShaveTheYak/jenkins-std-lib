@@ -52,7 +52,8 @@ class ActionFactory implements Serializable {
                 break
         }
 
-        if (actionType == 'node12') {
+        // Stupid workaround that will be fixed later
+        if (actionType == 'node16') {
             action = new JavaScriptAction(this.steps)
         }
 
