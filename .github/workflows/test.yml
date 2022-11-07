@@ -16,6 +16,12 @@ on:
       - 'docker/**'
 
 jobs:
+  debug:
+    name: Debug docker
+    runs-on: ubuntu-latest
+    steps:
+      - run: docker info
+
   linting:
     name: Lint
     runs-on: ubuntu-latest
