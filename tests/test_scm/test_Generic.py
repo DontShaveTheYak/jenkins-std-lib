@@ -14,8 +14,7 @@ def test_generic_unit(container: Container, job_folder):
 
 
 @pytest.mark.xfail(
-    strict=True,
-    reason="Broken because of https://issues.jenkins.io/browse/JENKINS-70025",
+    reason="Sometimes fails because of https://issues.jenkins.io/browse/JENKINS-70025",
 )
 def test_generic_example(container: Container, job_folder):
 
