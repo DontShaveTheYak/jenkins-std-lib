@@ -4,10 +4,6 @@
 import org.dsty.github.actions.Step
 
 node() {
-    // This is needed if you run jenkins in a docker container.
-    // It's the path on the host machine where your docker bind mount is stored.
-    // docker run -v '/tmp/jenkins_home:/var/run/jenkins_home' jenkins/jenkins:lts
-    env.DIND_JENKINS_HOME = '/tmp/jenkins_home'
 
     String cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
 
@@ -36,7 +32,7 @@ node() {
     stage('JavaScript Action') {
         options = [
             'name': 'Test JavaScript Action',
-            'uses': 'actions/hello-world-javascript-action@master',
+            'uses': 'actions/hello-world-javascript-action@main',
             'with': [
                 'who-to-greet': 'JavaScriptAction'
             ]

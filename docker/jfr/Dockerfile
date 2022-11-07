@@ -10,11 +10,10 @@ USER root
 
 RUN cd /usr/share/jenkins && jar -xvf jenkins.war
 
+# We dont font need to run the Jenkins GUI in the JFR
+RUN rm /etc/s6-overlay/s6-rc.d/user/contents.d/jenkins
+
+COPY /docker/jfr/run_job.sh /usr/bin/run_job
+COPY docker/jfr/root /
+
 ENV JENKINS_HOME="/usr/share/jenkins/ref/"
-ENV JAVA_OPTS="-Djenkins.model.Jenkins.slaveAgentPort=50000 -Djenkins.model.Jenkins.slaveAgentPortEnforce=true -Dhudson.model.LoadStatistics.clock=1000"
-
-USER jenkins
-
-ENTRYPOINT ["/app/bin/jenkinsfile-runner", "-w", "/usr/share/jenkins/", "-p", "/usr/share/jenkins/ref/plugins", "--withInitHooks", "/usr/share/jenkins/ref/init.groovy.d/", "-f"]
-
-CMD ["/workspace/Jenkinsfile"]

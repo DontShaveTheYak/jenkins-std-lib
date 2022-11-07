@@ -3,5 +3,7 @@
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false
-  }
+  },
+  "python.formatting.provider": "black",
+  "editor.formatOnSave": true
 }
