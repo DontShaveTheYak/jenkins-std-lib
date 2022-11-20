@@ -9,8 +9,6 @@ import org.dsty.js.node.NodeEnv
 LogClient log = new LogClient()
 
 node() {
-    // Ignore this line its for catching CPS issues.
-    String cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
 
     log.info('Lets install the latest version of nodenv.')
 
@@ -31,14 +29,13 @@ node() {
 
     node.runCommand('-v')
 
-    log.info('You can also specify the version in the .node-version file:')
-
     String nodeVersion = '''\
 17.9.1
 '''
-    println nodeVersion
 
-    log.info('Then that can be used by nodenv to automaticly install the correct version of node.')
+    log.info('You can also specify the version in the .node-version file')
+
+    log.info("Lets create a .node-version file with version ${nodeVersion}")
 
     Path ws = Path.workspace()
 
@@ -48,12 +45,12 @@ node() {
 
         nodeVersionFile.write(nodeVersion)
 
+        sh("cat ${nodeVersionFile}")
+
         node = nodenv.install()
 
         node.runCommand('-v')
 
     }
 
-    // Ignore this line its for catching CPS issues.
-    cps = sh(script: '#!/bin/bash\nset +x; > /dev/null 2>&1\necho Test for CPS issue', returnStdout: true)
 }
