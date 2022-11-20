@@ -82,7 +82,7 @@ def container(client: docker.DockerClient) -> Generator[Container, None, None]:
 
         cmd = f"run_job {job_path}"
 
-        exitcode, raw_output = container.exec_run(cmd, user="root")
+        exitcode, raw_output = container.exec_run(cmd)
 
         output = raw_output.decode("utf-8")
 

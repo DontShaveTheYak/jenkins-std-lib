@@ -317,7 +317,16 @@ class NodeEnv implements Serializable {
 
             // Install nodenv
             final Installer installer = new Installer()
-            installer.install()
+
+            try {
+                installer.install()
+            } catch(ExecutionException ex) {
+
+                if (!ex.stdErr.contains('All done!')) {
+                    throw new Exception("Failed to install nodenv.", ex)
+                }
+            }
+
 
             String binName = installer.getBinName()
 
@@ -331,7 +340,7 @@ class NodeEnv implements Serializable {
 
         if (!this.@nodenvInstallDir) {
 
-            final Path installPath = Path.jenkinsHome().child('./.nodenv')
+            final Path installPath = Path.userHome().child('./.nodenv')
 
             this.nodenvInstallDir = installPath
         }
