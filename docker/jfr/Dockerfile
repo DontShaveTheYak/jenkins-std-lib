@@ -15,5 +15,3 @@ RUN rm /etc/s6-overlay/s6-rc.d/user/contents.d/jenkins
 
 COPY /docker/jfr/run_job.sh /usr/bin/run_job
 COPY docker/jfr/root /
-
-ENV JENKINS_HOME="/usr/share/jenkins/ref/"
