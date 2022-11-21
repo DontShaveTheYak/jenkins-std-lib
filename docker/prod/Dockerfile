@@ -15,7 +15,9 @@ RUN apt-get update && \
     kmod \
     wget \
     git \
-    curl && \
+    curl \
+    build-essential \
+    python3 && \
     rm -rf /var/lib/apt/lists/*
 
 # Install and setup docker into the container

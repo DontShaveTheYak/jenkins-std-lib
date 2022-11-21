@@ -27,7 +27,7 @@ class ExecutableBuilder {
     static Executable buildExecutable(Path filePath) throws NoSuchFileException {
 
         if (!filePath.exists()) {
-            throw new NoSuchFileException(filePath.absolutize())
+            throw new NoSuchFileException(filePath.absolutize().toString())
         }
 
         final System os = Platform.system()
