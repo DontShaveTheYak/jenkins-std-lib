@@ -66,4 +66,6 @@ EXPOSE 80
 USER root
 COPY docker/prod/root /
 
+VOLUME [ "/var/lib/docker" ]
+
 ENTRYPOINT ["/init"]
