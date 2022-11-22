@@ -48,16 +48,6 @@ def container(client: docker.DockerClient) -> Generator[Container, None, None]:
         lib_path: {"bind": "/var/jenkins_home/pipeline-library", "mode": "rw"},
     }
 
-    # Check to see if we are in the VSCODE dev container
-    if "REMOTE_CONTAINERS" in os.environ:
-
-        # In the devcontainer we are safe to mount the docker image cache
-        # to speed up the testing of jobs.
-        volumes["/tmp/docker_cache"] = {
-            "bind": "/var/lib/docker",
-            "mode": "rw",
-        }
-
     container = client.containers.run(
         image.id, tty=True, detach=True, volumes=volumes, privileged=True
     )
