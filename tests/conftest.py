@@ -48,8 +48,15 @@ def container(client: docker.DockerClient) -> Generator[Container, None, None]:
         lib_path: {"bind": "/var/jenkins_home/pipeline-library", "mode": "rw"},
     }
 
+    run_time_args = {}
+
+    if 'GITHUB_ACTIONS' in os.environ:
+        run_time_args['mem_limit'] = '6g'
+        run_time_args['mem_reservation'] = '4g'
+        run_time_args['memswap_limit'] = '4g'
+
     container = client.containers.run(
-        image.id, tty=True, detach=True, volumes=volumes, privileged=True
+        image.id, tty=True, detach=True, volumes=volumes, privileged=True, **run_time_args
     )
 
     # We should really do some kinda check to see if docker daemon is up and running =/
