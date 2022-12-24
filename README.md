@@ -84,8 +84,8 @@ License [attribution](https://app.fossa.com/reports/86d307a0-2efa-4fd9-b983-3fd9
 
 [![FOSSA Status](https://app.fossa.com/api/projects/custom%2B25932%2Fgithub.com%2FDontShaveTheYak%2Fjenkins-std-lib.svg?type=large)](https://app.fossa.com/projects/custom%2B25932%2Fgithub.com%2FDontShaveTheYak%2Fjenkins-std-lib?ref=badge_large)
 
-[test-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests/master?label=Tests
-[lint-badge]: https://img.shields.io/github/workflow/status/DontShaveTheYak/jenkins-std-lib/Tests/master?label=Lint
+[test-badge]: https://img.shields.io/github/actions/workflow/status/DontShaveTheYak/jenkins-std-lib/test.yml?label=Tests
+[lint-badge]: https://img.shields.io/github/actions/workflow/status/DontShaveTheYak/jenkins-std-lib/test.yml?label=Lint
 [test-url]: https://github.com/DontShaveTheYak/jenkins-std-lib/actions/workflows/test.yml
 [doc-badge]: https://javadoc.io/badge2/io.github.dontshavetheyak/jenkins-std-lib/javadoc.svg?cacheSeconds=3600
 [doc-url]: https://javadoc.io/doc/io.github.dontshavetheyak/jenkins-std-lib
