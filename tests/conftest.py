@@ -53,7 +53,7 @@ def container(client: docker.DockerClient) -> Generator[Container, None, None]:
     if 'GITHUB_ACTIONS' in os.environ:
         run_time_args['mem_limit'] = '6g'
         run_time_args['mem_reservation'] = '4g'
-        run_time_args['memswap_limit'] = '10g'
+        run_time_args['memswap_limit'] = '16g'
 
     container = client.containers.run(
         image.id, tty=True, detach=True, volumes=volumes, privileged=True, **run_time_args
