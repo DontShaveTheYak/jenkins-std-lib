@@ -153,7 +153,7 @@ class Requests implements Serializable {
 
         Response response = handleRequest(connection)
 
-        if (response.headers?.'Content-Type'.contains('application/json')) {
+        if (response.headers?.'Content-Type'?.contains('application/json') == true) {
             JsonSlurperClassic slurper = new JsonSlurperClassic()
             response.json = slurper.parseText(response.body)
         }
