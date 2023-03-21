@@ -15,6 +15,7 @@ import org.dsty.system.os.programs.CliTool
 import org.dsty.system.os.programs.ScriptInstaller
 import org.dsty.system.os.download.HttpRetriever
 import org.dsty.system.os.download.FileRetriever
+import javax.net.ssl.HttpsURLConnection
 
 /**
  * Runs Github Actions workflows using the <a href="https://github.com/nektos/act"><strong>act</strong></a> CLI tool.
