@@ -94,7 +94,7 @@ jobs:
       - name: Tweet Release Info
         id: tweet
         if: github.base_ref == 'master'
-        uses: snow-actions/tweet@v1.1.1
+        uses: snow-actions/tweet@v1.4.0
         env:
           CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
           CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET_KEY }}
