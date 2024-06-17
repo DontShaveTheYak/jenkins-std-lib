@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-python@v3
 
       - name: Python Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.pythonLocation }}
           key: ${{ env.pythonLocation }}-${{ hashFiles('tests/requirements.txt') }}
@@ -59,7 +59,7 @@ jobs:
         uses: actions/setup-python@v3
 
       - name: Python Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.pythonLocation }}
           key: ${{ env.pythonLocation }}-${{ hashFiles('tests/requirements.txt') }}
