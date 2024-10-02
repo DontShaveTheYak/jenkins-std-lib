@@ -1,4 +1,4 @@
-FROM docker.io/jenkins/jenkins:2.346.3-lts-jdk11
+FROM docker.io/jenkins/jenkins:2.462.3-lts-jdk11
 
 ARG USERNAME=jenkins
 ARG USER_UID=1000
